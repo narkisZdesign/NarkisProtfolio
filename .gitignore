@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.agents/
+source_assets/
+debug.log
+
+*.local
+.env
+.env.*
