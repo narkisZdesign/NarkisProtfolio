@@ -443,11 +443,6 @@ main {
   text-transform: uppercase;
 }
 
-.asset-card-visual strong {
-  bottom: 7.5%;
-  font-size: clamp(1.45rem, 2.8vw, 2.8rem);
-}
-
 .round-arrow {
   position: absolute;
   z-index: 3;
