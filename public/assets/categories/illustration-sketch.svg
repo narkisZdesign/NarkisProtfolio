@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-label="Illustration sketch placeholder">
+  <rect width="720" height="420" fill="#fffefd"/>
+  <g fill="none" stroke="#0e4247" stroke-width="3" opacity=".34">
+    <path d="M185 265c-42-70 12-143 73-94 28-82 120-40 91 35 81-22 112 72 34 105 10 85-88 102-119 31-64 48-124-18-79-77z"/>
+    <path d="M262 172c-18 70 8 127 70 164M185 265c75-14 134-41 198-59M246 335c37-48 77-82 137-118"/>
+    <path d="M430 110l74 220M405 338l124-42"/>
+    <path d="M92 382h510M110 58h420"/>
+  </g>
+  <text x="70" y="46" fill="#0e4247" font-family="Arial, sans-serif" font-size="22" font-weight="700" opacity=".5">ILLUSTRATION SKETCH</text>
+</svg>

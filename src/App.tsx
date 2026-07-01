@@ -276,57 +276,39 @@ function Categories() {
 
       <div className="category-grid">
         {categories.map((category, index) => {
-          if (category.variant === "video") {
-            return (
-              <a
-                className="category-card category-card-featured video-category-card"
-                href={category.href}
-                key={category.title}
-                data-reveal
-                style={{ "--delay": `${index * 60}ms` } as CSSProperties}
-              >
-                <span className="video-card-visual">
-                  <img
-                    className="video-wireframe"
-                    src="/assets/video/video_wireframe.jpeg"
-                    alt=""
-                    aria-hidden="true"
-                  />
-                  <span className="gimbal-wrap" aria-hidden="true">
-                    <img className="gimbal-still" src="/assets/video/gimbal_still.webp" alt="" />
-                    <img className="gimbal-gif" src="/assets/video/gimbal_rotate.gif" alt="" />
-                  </span>
-                  <strong>{category.title}</strong>
-                  <span className="round-arrow video-visual-arrow" aria-hidden="true">
-                    <ArrowIcon />
-                  </span>
-                </span>
-              </a>
-            );
-          }
+          const isVideo = category.variant === "video";
 
           return (
             <a
-              className="category-card category-card-featured category-card-legacy"
+              className={`category-card category-card-featured ${isVideo ? "video-category-card" : "asset-category-card"}`}
               href={category.href}
               key={category.title}
               data-reveal
               style={{ "--delay": `${index * 60}ms` } as CSSProperties}
             >
-              <span className="legacy-card-visual">
-                <span
-                  className="category-art"
-                  style={{ backgroundPosition: category.position }}
+              <span className={isVideo ? "video-card-visual" : "asset-card-visual"}>
+                <img
+                  className={isVideo ? "video-wireframe" : "category-background"}
+                  src={category.visual.background}
+                  alt=""
                   aria-hidden="true"
                 />
+                <span className={isVideo ? "gimbal-wrap" : "category-object-wrap"} aria-hidden="true">
+                  <img
+                    className={isVideo ? "gimbal-still" : "category-object"}
+                    src={category.visual.object}
+                    alt=""
+                  />
+                  {category.visual.objectHover ? (
+                    <img
+                      className={isVideo ? "gimbal-gif" : "category-object-hover"}
+                      src={category.visual.objectHover}
+                      alt=""
+                    />
+                  ) : null}
+                </span>
                 <strong>{category.title}</strong>
                 <span className="round-arrow video-visual-arrow" aria-hidden="true">
-                  <ArrowIcon />
-                </span>
-              </span>
-              <span className="category-card-footer">
-                <span>{category.label}</span>
-                <span className="round-arrow footer-arrow" aria-hidden="true">
                   <ArrowIcon />
                 </span>
               </span>

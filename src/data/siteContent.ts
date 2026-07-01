@@ -36,8 +36,13 @@ export type Category = {
   title: string;
   label?: string;
   href: string;
-  position: string;
-  variant?: "video";
+  variant?: "video" | "placeholder";
+  visual: {
+    background: string;
+    object: string;
+    objectHover?: string;
+    objectAlt: string;
+  };
 };
 
 export type Service = {
@@ -88,12 +93,73 @@ export const navItems: NavItem[] = [
 ];
 
 export const categories: Category[] = [
-  { title: "Packaging", label: "Print & Packaging", href: "#work", position: "0% 0%" },
-  { title: "Fashion", label: "Fashion Design", href: "#work", position: "50% 0%" },
-  { title: "Video", label: "Video & Motion", href: "#work", position: "100% 0%", variant: "video" },
-  { title: "Branding", label: "Brand Identity", href: "#work", position: "0% 100%" },
-  { title: "Illustration", label: "Illustration", href: "#work", position: "50% 100%" },
-  { title: "Web Design", label: "Web Design", href: "#work", position: "100% 100%" },
+  {
+    title: "Packaging",
+    label: "Print & Packaging",
+    href: "#work",
+    variant: "placeholder",
+    visual: {
+      background: "/assets/categories/packaging-sketch.svg",
+      object: "/assets/categories/packaging-object.svg",
+      objectAlt: "Packaging design asset placeholder",
+    },
+  },
+  {
+    title: "Fashion",
+    label: "Fashion Design",
+    href: "#work",
+    variant: "placeholder",
+    visual: {
+      background: "/assets/categories/fashion-sketch.svg",
+      object: "/assets/categories/fashion-object.svg",
+      objectAlt: "Fashion design asset placeholder",
+    },
+  },
+  {
+    title: "Video",
+    label: "Video & Motion",
+    href: "#work",
+    variant: "video",
+    visual: {
+      background: "/assets/video/video_wireframe.jpeg",
+      object: "/assets/video/gimbal_still.webp",
+      objectHover: "/assets/video/gimbal_rotate.gif",
+      objectAlt: "Video camera gimbal",
+    },
+  },
+  {
+    title: "Branding",
+    label: "Brand Identity",
+    href: "#work",
+    variant: "placeholder",
+    visual: {
+      background: "/assets/categories/branding-sketch.svg",
+      object: "/assets/categories/branding-object.svg",
+      objectAlt: "Branding design asset placeholder",
+    },
+  },
+  {
+    title: "Illustration",
+    label: "Illustration",
+    href: "#work",
+    variant: "placeholder",
+    visual: {
+      background: "/assets/categories/illustration-sketch.svg",
+      object: "/assets/categories/illustration-object.svg",
+      objectAlt: "Illustration design asset placeholder",
+    },
+  },
+  {
+    title: "Web Design",
+    label: "Web Design",
+    href: "#work",
+    variant: "placeholder",
+    visual: {
+      background: "/assets/categories/web-design-sketch.svg",
+      object: "/assets/categories/web-design-object.svg",
+      objectAlt: "Web design asset placeholder",
+    },
+  },
 ];
 
 export const services: Service[] = [

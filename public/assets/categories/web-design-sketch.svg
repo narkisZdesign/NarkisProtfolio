@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-label="Web design sketch placeholder">
+  <rect width="720" height="420" fill="#fffefd"/>
+  <g fill="none" stroke="#0e4247" stroke-width="3" opacity=".35">
+    <path d="M90 88h415v245H90z"/>
+    <path d="M90 128h415M120 158h165v88H120zM315 158h160M315 195h130M315 232h92"/>
+    <path d="M120 276h110v38H120zM255 276h110v38H255zM390 276h85v38h-85z"/>
+    <path d="M545 145h100v175H545zM565 170h60M565 202h60M565 234h44M565 284h60"/>
+    <path d="M92 382h555M110 58h500"/>
+  </g>
+  <text x="70" y="46" fill="#0e4247" font-family="Arial, sans-serif" font-size="22" font-weight="700" opacity=".5">WEB DESIGN SKETCH</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-label="Fashion sketch placeholder">
+  <rect width="720" height="420" fill="#fffefd"/>
+  <g fill="none" stroke="#0e4247" stroke-width="3" opacity=".36">
+    <path d="M145 95h105l36 50-32 36-18-18v172H158V163l-18 18-32-36z"/>
+    <path d="M400 95h105l36 50-32 36-18-18v172h-78V163l-18 18-32-36z"/>
+    <path d="M158 335h78M413 335h78M165 130h64M420 130h64"/>
+    <path d="M92 382h510M110 58h420"/>
+  </g>
+  <text x="70" y="46" fill="#0e4247" font-family="Arial, sans-serif" font-size="22" font-weight="700" opacity=".5">FASHION SKETCH</text>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-label="Packaging sketch placeholder">
+  <rect width="720" height="420" fill="#fffefd"/>
+  <g fill="none" stroke="#0e4247" stroke-width="3" opacity=".38">
+    <path d="M110 85h190l55 70v180H110z"/>
+    <path d="M300 85l-62 68H55L110 85"/>
+    <path d="M300 85l55 70h175l-60-70z"/>
+    <path d="M238 153v182M355 155v180M110 335h360"/>
+    <path d="M120 58h260M84 382h330"/>
+  </g>
+  <text x="70" y="46" fill="#0e4247" font-family="Arial, sans-serif" font-size="22" font-weight="700" opacity=".5">PACKAGING SKETCH</text>
+</svg>

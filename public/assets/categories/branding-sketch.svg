@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-label="Branding sketch placeholder">
+  <rect width="720" height="420" fill="#fffefd"/>
+  <g fill="none" stroke="#0e4247" stroke-width="3" opacity=".36">
+    <path d="M105 85h220v220H105z"/>
+    <path d="M135 275 215 115l82 160M168 215h96"/>
+    <path d="M390 120h95M390 175h145M390 230h118M390 285h170"/>
+    <circle cx="215" cy="195" r="134"/>
+    <path d="M90 58h500M78 364h540"/>
+  </g>
+  <text x="70" y="46" fill="#0e4247" font-family="Arial, sans-serif" font-size="22" font-weight="700" opacity=".5">BRANDING SKETCH</text>
+</svg>
