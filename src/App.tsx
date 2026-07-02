@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import {
   arrowIcon as ArrowIcon,
+  assetUrl,
   categories,
   navItems,
   processSteps,
@@ -17,7 +18,7 @@ const HERO_FRAME_EASE = 0.34;
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 const heroFrame = (index: number) =>
-  `/assets/hero_frames/frame_${String(index + 1).padStart(3, "0")}.webp`;
+  assetUrl(`assets/hero_frames/frame_${String(index + 1).padStart(3, "0")}.webp`);
 
 function useRevealOnScroll() {
   useEffect(() => {
@@ -350,6 +351,7 @@ function About() {
         data-reveal
         role="img"
         aria-label="Narkis Zur avatar with notebook and color palette"
+        style={{ backgroundImage: `url(${assetUrl("assets/about_me.png")})` }}
       />
     </section>
   );

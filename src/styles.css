@@ -698,7 +698,6 @@ main {
   width: min(100%, 43rem);
   aspect-ratio: 1.08;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  background-image: url("/assets/about_me.png");
   background-repeat: no-repeat;
   background-size: 78rem auto;
   background-position: right top;

@@ -70,6 +70,9 @@ export type ValueItem = {
   icon: IconType;
 };
 
+export const assetUrl = (path: string) =>
+  `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
+
 export const siteConfig = {
   name: "Narkis Zur",
   initials: "NZ",
@@ -99,8 +102,8 @@ export const categories: Category[] = [
     href: "#work",
     variant: "placeholder",
     visual: {
-      background: "/assets/categories/packaging-sketch.svg",
-      object: "/assets/categories/packaging-object.svg",
+      background: assetUrl("assets/categories/packaging-sketch.svg"),
+      object: assetUrl("assets/categories/packaging-object.svg"),
       objectAlt: "Packaging design asset placeholder",
     },
   },
@@ -110,8 +113,8 @@ export const categories: Category[] = [
     href: "#work",
     variant: "placeholder",
     visual: {
-      background: "/assets/categories/fashion-sketch.svg",
-      object: "/assets/categories/fashion-object.svg",
+      background: assetUrl("assets/categories/fashion-sketch.svg"),
+      object: assetUrl("assets/categories/fashion-object.svg"),
       objectAlt: "Fashion design asset placeholder",
     },
   },
@@ -121,9 +124,9 @@ export const categories: Category[] = [
     href: "#work",
     variant: "video",
     visual: {
-      background: "/assets/video/video_wireframe.jpeg",
-      object: "/assets/video/gimbal_still.webp",
-      objectHover: "/assets/video/gimbal_rotate.gif",
+      background: assetUrl("assets/video/video_wireframe.jpeg"),
+      object: assetUrl("assets/video/gimbal_still.webp"),
+      objectHover: assetUrl("assets/video/gimbal_rotate.gif"),
       objectAlt: "Video camera gimbal",
     },
   },
@@ -133,8 +136,8 @@ export const categories: Category[] = [
     href: "#work",
     variant: "placeholder",
     visual: {
-      background: "/assets/categories/branding-sketch.svg",
-      object: "/assets/categories/branding-object.svg",
+      background: assetUrl("assets/categories/branding-sketch.svg"),
+      object: assetUrl("assets/categories/branding-object.svg"),
       objectAlt: "Branding design asset placeholder",
     },
   },
@@ -144,8 +147,8 @@ export const categories: Category[] = [
     href: "#work",
     variant: "placeholder",
     visual: {
-      background: "/assets/categories/illustration-sketch.svg",
-      object: "/assets/categories/illustration-object.svg",
+      background: assetUrl("assets/categories/illustration-sketch.svg"),
+      object: assetUrl("assets/categories/illustration-object.svg"),
       objectAlt: "Illustration design asset placeholder",
     },
   },
@@ -155,8 +158,8 @@ export const categories: Category[] = [
     href: "#work",
     variant: "placeholder",
     visual: {
-      background: "/assets/categories/web-design-sketch.svg",
-      object: "/assets/categories/web-design-object.svg",
+      background: assetUrl("assets/categories/web-design-sketch.svg"),
+      object: assetUrl("assets/categories/web-design-object.svg"),
       objectAlt: "Web design asset placeholder",
     },
   },
