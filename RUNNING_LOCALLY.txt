@@ -1,0 +1,13 @@
+How to run this portfolio on Windows
+
+1. Double-click run-portfolio.bat.
+2. If it says Node.js is missing, choose Y to install Node.js LTS with winget.
+3. After Node installs, close the window, open run-portfolio.bat again, and leave it open.
+4. The site opens at:
+
+   http://127.0.0.1:5173/
+
+Manual commands, if you prefer a terminal:
+
+   npm install
+   npm run dev

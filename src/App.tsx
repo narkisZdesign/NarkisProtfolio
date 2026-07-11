@@ -20,7 +20,7 @@ const clamp = (value: number, min: number, max: number) => Math.min(Math.max(val
 const heroFrame = (index: number) =>
   assetUrl(`assets/hero_frames/frame_${String(index + 1).padStart(3, "0")}.webp`);
 
-function useRevealOnScroll() {
+function useRevealOnScroll(dependency: string) {
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if (!elements.length) return;
@@ -39,7 +39,20 @@ function useRevealOnScroll() {
 
     elements.forEach((element) => observer.observe(element));
     return () => observer.disconnect();
+  }, [dependency]);
+}
+
+function useHashRoute() {
+  const getRoute = () => window.location.hash.replace("#", "") || "home";
+  const [route, setRoute] = useState(getRoute);
+
+  useEffect(() => {
+    const handleHashChange = () => setRoute(getRoute());
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
+
+  return route;
 }
 
 function Header() {
@@ -75,6 +88,159 @@ function Header() {
         {siteConfig.ctaLabel}
       </a>
     </header>
+  );
+}
+
+function ComparisonSlider({
+  before,
+  after,
+  beforeAlt,
+  afterAlt,
+}: {
+  before: string;
+  after: string;
+  beforeAlt: string;
+  afterAlt: string;
+}) {
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const [position, setPosition] = useState(50);
+
+  const updatePosition = (clientX: number) => {
+    const bounds = sliderRef.current?.getBoundingClientRect();
+    if (!bounds) return;
+    const next = ((clientX - bounds.left) / bounds.width) * 100;
+    setPosition(clamp(next, 8, 92));
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    updatePosition(event.clientX);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    updatePosition(event.clientX);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      setPosition((value) => clamp(value - 4, 8, 92));
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      setPosition((value) => clamp(value + 4, 8, 92));
+    }
+  };
+
+  return (
+    <div
+      className="comparison-slider"
+      ref={sliderRef}
+      role="slider"
+      tabIndex={0}
+      aria-label="Compare two packaging colorways"
+      aria-valuemin={8}
+      aria-valuemax={92}
+      aria-valuenow={Math.round(position)}
+      aria-valuetext={`${Math.round(position)} percent showing first image`}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onKeyDown={handleKeyDown}
+      style={{ "--slider-position": `${position}%` } as CSSProperties}
+    >
+      <img className="comparison-image comparison-image-after" src={after} alt={afterAlt} />
+      <div className="comparison-before">
+        <img className="comparison-image" src={before} alt={beforeAlt} />
+      </div>
+      <span className="comparison-line" aria-hidden="true">
+        <span className="comparison-handle">
+          <ArrowIcon />
+          <ArrowIcon />
+        </span>
+      </span>
+    </div>
+  );
+}
+
+function PackagingPage() {
+  return (
+    <main className="packaging-page">
+      <section className="packaging-intro" aria-labelledby="packaging-title">
+        <div className="packaging-intro-copy" data-reveal>
+          <h1 id="packaging-title">Packaging</h1>
+          <p>From dielines to final mockups –<br />Packaging built with purpose</p>
+          <a className="packaging-back" href="#home">&lt;&lt; Go back for more projects</a>
+          <div className="packaging-values" aria-label="Packaging services">
+            <span><img src={assetUrl("assets/packaging/Artboard 1.jpg")} alt="" aria-hidden="true" />Creative<br />Solutions</span>
+            <span><img src={assetUrl("assets/packaging/Artboard 2.jpg")} alt="" aria-hidden="true" />Sustainable<br />Thinking</span>
+            <span><img src={assetUrl("assets/packaging/Artboard 3.jpg")} alt="" aria-hidden="true" />Brand-Focused<br />Design</span>
+          </div>
+        </div>
+        <div className="packaging-intro-art" data-reveal>
+          <img className="intro-dieline" src={assetUrl("assets/packaging/box_icon_layout.png")} alt="Packaging dieline" />
+          <img className="intro-box" src={assetUrl("assets/packaging/box_icon_cutout.png")} alt="Open blue packaging box" />
+        </div>
+      </section>
+
+      <article className="packaging-case">
+        <section className="case-overview packaging-container">
+          <div className="case-pair" data-reveal>
+            <ComparisonSlider
+              before={assetUrl("assets/packaging/Pink_Store_Development_matt.png")}
+              after={assetUrl("assets/packaging/Blue_Store_Development_matt.png")}
+              beforeAlt="Desert Love activity gym packaging"
+              afterAlt="Ocean Secrets activity gym packaging"
+            />
+          </div>
+          <div className="case-copy" data-reveal>
+            <h2>Packaging design<br />for a developmental<br />toys line</h2>
+            <h3>Desert Love &amp; Ocean Secrets<br />by Minene</h3>
+            <p>A packaging design system for a developmental toys line, featuring a variety of products including baby activity gyms, soft activity books, hanging toys, activity cubes, and more.<br />The project focused on creating a consistent and recognizable visual language across the collection, while adapting each package to the product&apos;s size, structure, retail placement, and key developmental benefits.</p>
+          </div>
+        </section>
+
+        <section className="design-approach packaging-container" aria-labelledby="design-approach-title" data-reveal>
+          <h2 id="design-approach-title">The design approach</h2>
+          <div className="approach-grid">
+            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 7.jpg")} alt="" aria-hidden="true" /><h3>Inspired by nature</h3><p>Desert &amp; Ocean worlds brought to life in soft, neutral tones.</p></article>
+            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 8.png")} alt="" aria-hidden="true" /><h3>Development first</h3><p>Packaging communicates the product&apos;s benefits and activities clearly.</p></article>
+            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 9.png")} alt="" aria-hidden="true" /><h3>Gentle &amp; modern</h3><p>A calm, minimal visual language that feels warm and trustworthy.</p></article>
+            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 10.png")} alt="" aria-hidden="true" /><h3>Shelf impact</h3><p>Clean structure, large window &amp; clear hierarchy for retail presence.</p></article>
+          </div>
+        </section>
+
+        <section className="collection-row packaging-container">
+          <div className="collection-images" data-reveal>
+            <img src={assetUrl("assets/packaging/Developmental_cube_toy.png")} alt="Developmental activity cube packaging" />
+            <img src={assetUrl("assets/packaging/Hanging_Development_matt.png")} alt="Hanging developmental toy packaging" />
+            <img src={assetUrl("assets/packaging/Developmental_book_toy.png")} alt="Developmental activity book packaging" />
+          </div>
+          <div className="collection-note" data-reveal><h2>In store</h2><p>Consistent line look that stands out on the shelf and communicates quality, trust and care.</p></div>
+        </section>
+
+        <section className="dieline-panel packaging-container" data-reveal>
+          <div><h2>Dieline &amp; layout</h2><p>Complete packaging dieline and print layout.</p><img src={assetUrl("assets/packaging/פריסה והוראות-01.jpg")} alt="Packaging dieline and print layout" /></div>
+          <div><h2>Step-by-step</h2><p>Packing &amp; Assembly Instructions</p><img src={assetUrl("assets/packaging/פריסה והוראות-02.jpg")} alt="Packaging assembly instructions" /></div>
+        </section>
+
+        <section className="bath-case packaging-container">
+          <div className="bath-copy" data-reveal>
+            <h2>Packaging design for bath<br />toys sets collection</h2>
+            <h3>4-Piece Bath Toy Line<br />By Minene</h3>
+            <p>The visual language combines illustration, product-part photography, and themed atmosphere to create a playful yet clear packaging system. Each pack explains the set content and assembly visually, while maintaining the brand&apos;s soft color palette and adding an engaging, playful twist.</p>
+          </div>
+          <div className="bath-back" data-reveal><img className="bath-back-icon" src={assetUrl("assets/packaging/back of pack icon .png")} alt="" aria-hidden="true" /><h3>Back of Pack</h3><p>Parent-friendly information explains the product benefits, how the pieces work together, and how to play with the set in a clear and visually engaging way.</p><img className="bath-back-image" src={assetUrl("assets/packaging/ChatGPT Image Jul 1, 2026, 12_14_29 PM.png")} alt="Packaging back panel" /></div>
+          <img className="bath-main-image" src={assetUrl("assets/packaging/4 packaging bath toys sets.png")} alt="Bath toy packaging collection" data-reveal />
+        </section>
+
+        <section className="bath-footer packaging-container">
+          <div><h2>System highlights</h2><div className="highlights"><article><h3>Shelf-friendly<br />hierarchy</h3><p>Clear structure for strong retail visibility.</p></article><article><h3>Easy product<br />understanding</h3><p>Clear visuals help communicate the content.</p></article><article><h3>Collection<br />consistency</h3><p>A unified visual language across all four sets.</p></article></div></div>
+          <div className="how-it-works"><h2>How it works</h2><div><span><img src={assetUrl("assets/packaging/otter1.png")} alt="Unbox" /><b>Unbox</b></span><span><img src={assetUrl("assets/packaging/otter2.png")} alt="Connect" /><b>Connect</b></span><span><img src={assetUrl("assets/packaging/otter3.png")} alt="Play" /><b>Play</b></span></div></div>
+        </section>
+      </article>
+    </main>
   );
 }
 
@@ -454,20 +620,32 @@ function ValueStrip() {
 }
 
 export function App() {
-  useRevealOnScroll();
+  const route = useHashRoute();
+  const isPackagingPage = route === "packaging" || route.startsWith("packaging-");
+  useRevealOnScroll(route);
+
+  useEffect(() => {
+    if (isPackagingPage) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  }, [isPackagingPage]);
 
   return (
     <>
       <Header />
-      <main>
-        <Hero />
-        <Categories />
-        <About />
-        <Services />
-        <Process />
-        <Tools />
-        <ValueStrip />
-      </main>
+      {isPackagingPage ? (
+        <PackagingPage />
+      ) : (
+        <main>
+          <Hero />
+          <Categories />
+          <About />
+          <Services />
+          <Process />
+          <Tools />
+          <ValueStrip />
+        </main>
+      )}
     </>
   );
 }

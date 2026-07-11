@@ -7,3 +7,4 @@ debug.log
 *.local
 .env
 .env.*
+.mcp.json

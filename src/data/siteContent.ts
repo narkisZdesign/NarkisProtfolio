@@ -70,6 +70,39 @@ export type ValueItem = {
   icon: IconType;
 };
 
+export type PackagingApproach = {
+  title: string;
+  description: string;
+  icon: IconType;
+};
+
+export type PackagingProject = {
+  id: string;
+  title: string;
+  subtitle: string;
+  client: string;
+  description: string;
+  comparison: {
+    before: string;
+    after: string;
+    beforeAlt: string;
+    afterAlt: string;
+  };
+  approach: PackagingApproach[];
+  variants: {
+    src: string;
+    alt: string;
+  }[];
+  storeImages: {
+    src: string;
+    alt: string;
+  }[];
+  systemImages: {
+    src: string;
+    alt: string;
+  }[];
+};
+
 export const assetUrl = (path: string) =>
   `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
 
@@ -99,7 +132,7 @@ export const categories: Category[] = [
   {
     title: "Packaging",
     label: "Print & Packaging",
-    href: "#work",
+    href: "#packaging",
     variant: "placeholder",
     visual: {
       background: assetUrl("assets/categories/packaging-sketch.svg"),
@@ -162,6 +195,91 @@ export const categories: Category[] = [
       object: assetUrl("assets/categories/web-design-object.svg"),
       objectAlt: "Web design asset placeholder",
     },
+  },
+];
+
+export const packagingProjects: PackagingProject[] = [
+  {
+    id: "minene-developmental-toys",
+    title: "Desert Love & Ocean Secrets",
+    subtitle: "Developmental toys line",
+    client: "Minene",
+    description:
+      "Packaging design for a line of developmental activity gyms that support babies' motor and cognitive development.",
+    comparison: {
+      before: assetUrl("assets/packaging/Pink_Store_Development_matt.png"),
+      after: assetUrl("assets/packaging/Blue_Store_Development_matt.png"),
+      beforeAlt: "Pink Minene developmental activity gym packaging in store",
+      afterAlt: "Blue Minene developmental activity gym packaging in store",
+    },
+    approach: [
+      {
+        title: "Inspired by nature",
+        description: "Desert and ocean worlds brought to life in soft, neutral tones.",
+        icon: FaRegLightbulb,
+      },
+      {
+        title: "Development first",
+        description: "Packaging communicates the product benefits and activities clearly.",
+        icon: FaBullseye,
+      },
+      {
+        title: "Gentle & modern",
+        description: "A calm visual language that feels warm and trustworthy.",
+        icon: TbPalette,
+      },
+      {
+        title: "Shelf impact",
+        description: "Clean structure, large window and clear hierarchy for retail presence.",
+        icon: TbPackage,
+      },
+    ],
+    variants: [
+      {
+        src: assetUrl("assets/packaging/Pink_Development_matt.png"),
+        alt: "Pink developmental activity gym packaging",
+      },
+      {
+        src: assetUrl("assets/packaging/Blue_Development_matt.png"),
+        alt: "Blue developmental activity gym packaging",
+      },
+      {
+        src: assetUrl("assets/packaging/Developmental_book_toy.png"),
+        alt: "Developmental book toy packaging",
+      },
+      {
+        src: assetUrl("assets/packaging/Developmental_cube_toy.png"),
+        alt: "Developmental cube toy packaging",
+      },
+      {
+        src: assetUrl("assets/packaging/Hanging_Development_matt.png"),
+        alt: "Hanging developmental toy packaging",
+      },
+    ],
+    storeImages: [
+      {
+        src: assetUrl("assets/packaging/Pink_Store_Development_matt.png"),
+        alt: "Pink developmental activity gym packaging on shelf",
+      },
+      {
+        src: assetUrl("assets/packaging/Blue_Store_Development_matt.png"),
+        alt: "Blue developmental activity gym packaging on shelf",
+      },
+    ],
+    systemImages: [
+      {
+        src: assetUrl("assets/packaging/Box_layout.jpg"),
+        alt: "Packaging dieline and structural layout",
+      },
+      {
+        src: assetUrl("assets/packaging/box_icon_layout.png"),
+        alt: "Packaging icon layout and assembly details",
+      },
+      {
+        src: assetUrl("assets/packaging/box_icon.png"),
+        alt: "Packaging icon system detail",
+      },
+    ],
   },
 ];
 
