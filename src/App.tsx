@@ -11,12 +11,19 @@ import {
   values,
 } from "./data/siteContent";
 
-const HERO_FRAME_COUNT = 200;
+const HERO_SCROLL_FRAME_COUNT = 262;
+const HERO_SCROLL_WHEEL_FACTOR = 0.052;
+const HERO_SCROLL_TOUCH_FACTOR = 0.12;
+const HERO_SCROLL_EASE = 0.24;
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
-const heroFrame = (index: number) =>
-  assetUrl(`assets/hero_frames/frame_${String(index + 1).padStart(3, "0")}.webp`);
+const heroScrollFrame = (index: number) =>
+  assetUrl(`assets/hero/scroll_frames/frame_${String(index + 1).padStart(3, "0")}.webp`);
+
+const HERO_INTRO_VIDEO = assetUrl("assets/hero/intro.mp4");
+const HERO_INTRO_POSTER = assetUrl("assets/hero/intro-poster.webp");
+const HERO_REDUCED_MOTION_POSTER = assetUrl("assets/hero/reduced-motion-poster.webp");
 
 function useRevealOnScroll(dependency: string) {
   useEffect(() => {
@@ -290,6 +297,160 @@ function PackagingProjectNav() {
   );
 }
 
+const fashionSelectedGarments = [
+  { src: "assets/fashion/selected-01.png", alt: "Boy wearing a charcoal sleeveless Maybe Later set" },
+  { src: "assets/fashion/selected-02.png", alt: "Girl wearing a Berry Sweet graphic T-shirt" },
+  { src: "assets/fashion/selected-03.png", alt: "Child wearing an Easy Peasy lemon graphic T-shirt" },
+  { src: "assets/fashion/selected-04.png", alt: "Boy wearing a Champion sports set" },
+  { src: "assets/fashion/selected-05.png", alt: "Boy wearing a white sleeveless graphic set" },
+];
+
+const fashionProcess = [
+  {
+    icon: "assets/fashion/process-direction-icon.png",
+    title: "Concept & Direction",
+    description: "Building the visual concept and collection language.",
+  },
+  {
+    icon: "assets/fashion/process-apparel-icon.png",
+    title: "Apparel Design",
+    description: "Developing garment design, graphics and print placements together.",
+  },
+  {
+    icon: "assets/fashion/process-technical-icon.png",
+    title: "Technical Development",
+    description: "Preparing tech packs, measurements and production files.",
+  },
+  {
+    icon: "assets/fashion/process-finishing-icon.png",
+    title: "Finishing Details",
+    description: "Labels, trims, fabrics and final touches that complete the product.",
+  },
+];
+
+const fashionSketchSteps = [
+  { src: "assets/fashion/sketch-01.png", alt: "Initial hand-drawn lettering sketch" },
+  { src: "assets/fashion/sketch-02.png", alt: "Digital lettering artwork development" },
+  { src: "assets/fashion/sketch-03.png", alt: "Graphic applied to a black sleeveless top" },
+  { src: "assets/fashion/sketch-04.png", alt: "Graphic applied to a black T-shirt" },
+  { src: "assets/fashion/sketch-05.png", alt: "Finished garment worn by a child" },
+];
+
+function FashionPage() {
+  return (
+    <main className="fashion-page">
+      <div className="fashion-stage">
+        <section className="fashion-intro" aria-labelledby="fashion-title">
+          <div className="fashion-intro-copy">
+            <h1 id="fashion-title">Fashion</h1>
+            <p>Thoughtful apparel graphics from<br />concept to garment</p>
+            <a href="#home">&lt;&lt; Go back for more procjects</a>
+            <div className="fashion-intro-values" aria-label="Fashion services">
+              <span><img src={assetUrl("assets/fashion/intro-garment-icon.png")} alt="" />Garment<br />Design</span>
+              <span><img src={assetUrl("assets/fashion/intro-print-icon.png")} alt="" />Print &amp;<br />Graphics</span>
+              <span><img src={assetUrl("assets/fashion/intro-production-icon.png")} alt="" />Production<br />Ready</span>
+            </div>
+          </div>
+          <div className="fashion-intro-art" aria-hidden="true">
+            <img className="fashion-intro-sketch" src={assetUrl("assets/fashion/intro-sketch.png")} alt="" />
+            <img className="fashion-intro-shirt" src={assetUrl("assets/fashion/intro-shirt.png")} alt="" />
+          </div>
+        </section>
+
+        <section className="fashion-overview" aria-labelledby="fashion-overview-title">
+          <img className="fashion-overview-photo" src={assetUrl("assets/fashion/hero-main.png")} alt="Child wearing a charcoal graphic T-shirt" />
+          <div className="fashion-overview-copy">
+            <h2 id="fashion-overview-title">Garment Design From<br />Concept To Production</h2>
+            <h3>Line Bar Zomer<br />By Minene</h3>
+            <span aria-hidden="true" />
+            <p>A fashion graphics project developed across multiple garments, combining typography, illustration, print placement and product development. Every design was created to work as part of a unified collection while considering materials, construction and production.</p>
+          </div>
+          <div className="fashion-process-grid">
+            {fashionProcess.map((step) => (
+              <article key={step.title}>
+                <img src={assetUrl(step.icon)} alt="" aria-hidden="true" />
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="fashion-selected" aria-labelledby="fashion-selected-title">
+          <h2 id="fashion-selected-title">Selected Garments Projects</h2>
+          <p>A selection of apparel collections developed from concept to production</p>
+          <div className="fashion-selected-grid">
+            {fashionSelectedGarments.map((garment, index) => (
+              <figure className="fashion-selected-card" key={garment.src} tabIndex={0}>
+                <img src={assetUrl(garment.src)} alt={garment.alt} />
+                <span className="fashion-hover-placeholder" aria-hidden="true">
+                  Alternate image<br />placeholder {String(index + 1).padStart(2, "0")}
+                </span>
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        <section className="fashion-sketch" aria-labelledby="fashion-sketch-title">
+          <h2 id="fashion-sketch-title">From The First Sketch To The Finished Garment</h2>
+          <div className="fashion-sketch-grid">
+            {fashionSketchSteps.map((step, index) => (
+              <article key={step.src}>
+                <div className="fashion-sketch-image"><img src={assetUrl(step.src)} alt={step.alt} /></div>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>Collection consistency</h3>
+                <p>A unified visual language across all four sets.</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="fashion-more" aria-labelledby="fashion-more-title">
+          <div className="fashion-more-images">
+            {["more-01.png", "more-02.png", "more-03.png", "more-04.png"].map((name, index) => (
+              <img key={name} src={assetUrl(`assets/fashion/${name}`)} alt={`Additional garment graphic design ${index + 1}`} />
+            ))}
+          </div>
+          <div>
+            <h2 id="fashion-more-title">More Designs</h2>
+            <p>A selection of additional graphics developed across different collections, each tailored to its own story while maintaining a consistent brand language.</p>
+          </div>
+        </section>
+
+        <section className="fashion-embroidery" aria-labelledby="fashion-embroidery-title">
+          <div className="fashion-section-copy">
+            <h2 id="fashion-embroidery-title">Embroidery<br />Development</h2>
+            <h3>From Sketch<br />To Stitch</h3>
+            <span aria-hidden="true" />
+            <p>Embroidery graphics developed from initial sketches to production-ready artwork. Each design was refined with careful attention to composition, stitch feasibility, placement, and garment application.</p>
+          </div>
+          <div className="fashion-embroidery-images">
+            {["embroidery-01.png", "embroidery-02.png", "embroidery-03.png"].map((name, index) => (
+              <img key={name} src={assetUrl(`assets/fashion/${name}`)} alt={`Embroidery development stage ${index + 1}`} />
+            ))}
+          </div>
+        </section>
+
+        <section className="fashion-details-title"><h2>Design Is In The Details</h2></section>
+
+        <section className="fashion-tags" aria-labelledby="fashion-tags-title">
+          <div className="fashion-tags-images">
+            {["tags-card-01.png", "tags-card-02.png", "tags-card-03.png"].map((name, index) => (
+              <img key={name} src={assetUrl(`assets/fashion/${name}`)} alt={`Fashion tag and label design ${index + 1}`} />
+            ))}
+          </div>
+          <div className="fashion-section-copy fashion-tags-copy">
+            <h2 id="fashion-tags-title">Fashion Tags &amp;<br />Label Design</h2>
+            <h3>Completing The<br />Product Experience</h3>
+            <span aria-hidden="true" />
+            <p>The product experience doesn&apos;t end with the garment itself. Hang tags, woven labels and finishing details strengthen the collection and create a complete, premium presentation.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
 function PackagingPage() {
   const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
 
@@ -454,101 +615,270 @@ function PackagingPage() {
 }
 
 function Hero() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [frameIndex, setFrameIndex] = useState(0);
+  const [introComplete, setIntroComplete] = useState(false);
+  const [scrollFrameReady, setScrollFrameReady] = useState(false);
+  const [reducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const heroSectionRef = useRef<HTMLElement | null>(null);
+  const scrollFrameRef = useRef<HTMLImageElement | null>(null);
+  const introVideoRef = useRef<HTMLVideoElement | null>(null);
+  const heroCopyRef = useRef<HTMLDivElement | null>(null);
+  const frameValueRef = useRef(0);
+  const targetFrameRef = useRef(0);
   const animationFrameRef = useRef<number | null>(null);
-  const reducedMotionRef = useRef(false);
-  const preloadedFramesRef = useRef(new Set<number>());
-
-  const progress = frameIndex / (HERO_FRAME_COUNT - 1);
-  const copyOpacity = clamp((progress - 0.78) / 0.12, 0, 1);
-  const frameSrc = heroFrame(frameIndex);
+  const lastRenderedFrameRef = useRef(0);
+  const touchYRef = useRef<number | null>(null);
+  const introCompleteRef = useRef(false);
+  const pendingScrollRef = useRef(false);
+  const commitTargetFrameRef = useRef<(nextValue: number) => void>(() => undefined);
+  const jumpToFrameRef = useRef<(nextValue: number) => void>(() => undefined);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    reducedMotionRef.current = reducedMotion;
     if (reducedMotion) {
-      setFrameIndex(HERO_FRAME_COUNT - 1);
+      const finalFrame = HERO_SCROLL_FRAME_COUNT - 1;
+      frameValueRef.current = finalFrame;
+      targetFrameRef.current = finalFrame;
+      lastRenderedFrameRef.current = finalFrame;
+      introCompleteRef.current = true;
+      setIntroComplete(true);
       return;
     }
 
-    const preloadFrame = (index: number) => {
-      if (preloadedFramesRef.current.has(index)) return;
-      preloadedFramesRef.current.add(index);
+    let cancelled = false;
+    const preloadOrder = Array.from({ length: HERO_SCROLL_FRAME_COUNT }, (_, index) => index);
+    let preloadIndex = 0;
+
+    const preloadFrame = (index: number) => new Promise<void>((resolve) => {
       const image = new Image();
       image.decoding = "async";
-      image.src = heroFrame(index);
-    };
+      image.onload = () => resolve();
+      image.onerror = () => resolve();
+      image.src = heroScrollFrame(index);
+    });
 
-    [0, 1, 2, 4, 8, 16, 32, 56, 84, 116, 150, 176, 199].forEach(preloadFrame);
-  }, []);
-
-  useEffect(() => {
-    if (reducedMotionRef.current) return;
-
-    const maxFrame = HERO_FRAME_COUNT - 1;
-    const updateFromScroll = () => {
-      animationFrameRef.current = null;
-      const section = sectionRef.current;
-      if (!section) return;
-      const bounds = section.getBoundingClientRect();
-      const scrollRange = Math.max(section.offsetHeight - window.innerHeight, 1);
-      const nextProgress = clamp(-bounds.top / scrollRange, 0, 1);
-      setFrameIndex(Math.round(nextProgress * maxFrame));
-    };
-
-    const onScroll = () => {
-      if (animationFrameRef.current === null) {
-        animationFrameRef.current = window.requestAnimationFrame(updateFromScroll);
+    const preloadWorker = async () => {
+      while (!cancelled && preloadIndex < preloadOrder.length) {
+        const nextIndex = preloadOrder[preloadIndex];
+        preloadIndex += 1;
+        await preloadFrame(nextIndex);
       }
     };
 
-    updateFromScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    const preloadTimer = window.setTimeout(() => {
+      void Promise.all(Array.from({ length: 4 }, () => preloadWorker()));
+    }, 180);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (animationFrameRef.current !== null) window.cancelAnimationFrame(animationFrameRef.current);
+      cancelled = true;
+      window.clearTimeout(preloadTimer);
+      if (animationFrameRef.current !== null) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+      }
     };
-  }, []);
+  }, [reducedMotion]);
 
   useEffect(() => {
-    if (reducedMotionRef.current) return;
-    for (const offset of [-2, -1, 1, 2, 4, 8]) {
-      const index = clamp(frameIndex + offset, 0, HERO_FRAME_COUNT - 1);
-      if (preloadedFramesRef.current.has(index)) continue;
-      preloadedFramesRef.current.add(index);
-      const image = new Image();
-      image.decoding = "async";
-      image.src = heroFrame(index);
+    if (reducedMotion) return;
+
+    const maxFrame = HERO_SCROLL_FRAME_COUNT - 1;
+    const atTop = () => window.scrollY <= 2;
+    const renderFrame = (value: number) => {
+      const rounded = Math.round(clamp(value, 0, maxFrame));
+      if (rounded === lastRenderedFrameRef.current) return;
+
+      lastRenderedFrameRef.current = rounded;
+      const progress = rounded / maxFrame;
+      const frame = scrollFrameRef.current;
+      if (frame) {
+        frame.src = heroScrollFrame(rounded);
+        frame.dataset.frame = String(rounded + 1);
+      }
+
+      if (heroCopyRef.current) {
+        heroCopyRef.current.style.opacity = String(clamp((progress - 0.78) / 0.12, 0, 1));
+      }
+
+      heroSectionRef.current?.classList.toggle("is-sketch", progress < 0.42);
+    };
+
+    const stepTowardTarget = () => {
+      const current = frameValueRef.current;
+      const target = targetFrameRef.current;
+      const diff = target - current;
+
+      if (Math.abs(diff) < 0.35) {
+        frameValueRef.current = target;
+        renderFrame(target);
+        animationFrameRef.current = null;
+        return;
+      }
+
+      const next = current + diff * HERO_SCROLL_EASE;
+      frameValueRef.current = next;
+      renderFrame(next);
+      animationFrameRef.current = window.requestAnimationFrame(stepTowardTarget);
+    };
+
+    const commitTargetFrame = (nextValue: number) => {
+      targetFrameRef.current = clamp(nextValue, 0, maxFrame);
+      if (animationFrameRef.current === null) {
+        animationFrameRef.current = window.requestAnimationFrame(stepTowardTarget);
+      }
+    };
+
+    const jumpToFrame = (nextValue: number) => {
+      const nextFrame = clamp(nextValue, 0, maxFrame);
+      frameValueRef.current = nextFrame;
+      targetFrameRef.current = nextFrame;
+      renderFrame(nextFrame);
+    };
+
+    commitTargetFrameRef.current = commitTargetFrame;
+    jumpToFrameRef.current = jumpToFrame;
+
+    const shouldCapture = (delta: number) => {
+      if (!atTop() || Math.abs(delta) < 0.5) return false;
+      if (!introCompleteRef.current) return delta > 0;
+      if (delta > 0 && frameValueRef.current < maxFrame - 0.35) return true;
+      if (delta < 0 && frameValueRef.current > 0.35) return true;
+      return false;
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (!shouldCapture(event.deltaY)) return;
+      event.preventDefault();
+
+      if (!introCompleteRef.current) {
+        pendingScrollRef.current = true;
+        return;
+      }
+
+      commitTargetFrame(targetFrameRef.current + event.deltaY * HERO_SCROLL_WHEEL_FACTOR);
+    };
+
+    const onTouchStart = (event: TouchEvent) => {
+      touchYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const previousY = touchYRef.current;
+      const currentY = event.touches[0]?.clientY ?? previousY;
+      if (previousY === null || currentY === null) return;
+
+      const delta = previousY - currentY;
+      touchYRef.current = currentY;
+
+      if (!shouldCapture(delta)) return;
+      event.preventDefault();
+
+      if (!introCompleteRef.current) {
+        pendingScrollRef.current = true;
+        return;
+      }
+
+      commitTargetFrame(targetFrameRef.current + delta * HERO_SCROLL_TOUCH_FACTOR);
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const forwardKeys = ["ArrowDown", "PageDown", " ", "Spacebar"];
+      const backKeys = ["ArrowUp", "PageUp"];
+      const isForward = forwardKeys.includes(event.key);
+      const isBack = backKeys.includes(event.key);
+      if (!isForward && !isBack) return;
+
+      const delta = isForward ? 18 : -18;
+      if (!shouldCapture(delta)) return;
+      event.preventDefault();
+
+      if (!introCompleteRef.current) {
+        pendingScrollRef.current = true;
+        return;
+      }
+
+      commitTargetFrame(targetFrameRef.current + delta);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("keydown", onKeyDown);
+      commitTargetFrameRef.current = () => undefined;
+      jumpToFrameRef.current = () => undefined;
+    };
+  }, [reducedMotion]);
+
+  const finishIntro = () => {
+    if (introCompleteRef.current) return;
+
+    introCompleteRef.current = true;
+    introVideoRef.current?.pause();
+    setIntroComplete(true);
+
+    if (pendingScrollRef.current) {
+      pendingScrollRef.current = false;
+      commitTargetFrameRef.current(1);
     }
-  }, [frameIndex]);
+  };
+
+  const handleScrollCue = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!introCompleteRef.current) {
+      event.preventDefault();
+      pendingScrollRef.current = true;
+      return;
+    }
+
+    if (frameValueRef.current < HERO_SCROLL_FRAME_COUNT - 1 && !reducedMotion) {
+      event.preventDefault();
+      jumpToFrameRef.current(HERO_SCROLL_FRAME_COUNT - 1);
+      window.setTimeout(() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" }), 120);
+    }
+  };
+
+  const showScrollSequence = introComplete && scrollFrameReady;
 
   return (
     <section
-      className={progress < 0.42 ? "hero-section is-sketch" : "hero-section"}
+      className={reducedMotion ? "hero-section" : "hero-section is-sketch"}
+      ref={heroSectionRef}
       id="home"
       aria-label="Portfolio introduction"
-      ref={sectionRef}
     >
-      <div className="hero-image-wrap" style={{ "--intro-progress": progress } as CSSProperties}>
+      <div className={showScrollSequence ? "hero-image-wrap is-scroll-sequence" : "hero-image-wrap"}>
         <img
-          className="hero-frame"
-          src={frameSrc}
+          className="hero-media hero-scroll-frame"
+          ref={scrollFrameRef}
+          src={reducedMotion ? HERO_REDUCED_MOTION_POSTER : heroScrollFrame(0)}
+          data-frame={reducedMotion ? HERO_SCROLL_FRAME_COUNT : 1}
           alt="Graphic designer studio scene transitioning from sketch to polished design"
+          draggable="false"
+          onLoad={() => setScrollFrameReady(true)}
         />
-        <div className="hero-copy" style={{ opacity: copyOpacity }}>
+        {reducedMotion ? null : (
+          <video
+            className="hero-media hero-intro-video"
+            ref={introVideoRef}
+            src={HERO_INTRO_VIDEO}
+            poster={HERO_INTRO_POSTER}
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            aria-hidden="true"
+            onEnded={finishIntro}
+            onError={finishIntro}
+          />
+        )}
+        <div className="hero-copy" ref={heroCopyRef} style={{ opacity: reducedMotion ? 1 : 0 }}>
           <h1>{siteConfig.heroTitle}</h1>
           <p className="hero-subtitle">{siteConfig.heroSubtitle}</p>
           <p>{siteConfig.heroBody}</p>
         </div>
-        <span className="hero-progress" aria-hidden="true">
-          <span>Scroll to reveal</span>
-          <i><b style={{ transform: `scaleX(${progress})` }} /></i>
-        </span>
-        <a className="scroll-cue" href="#work" aria-label="Skip animation and view work">
+        <a className="scroll-cue" href="#work" aria-label="Scroll to work" onClick={handleScrollCue}>
           <span />
         </a>
       </div>
@@ -752,20 +1082,29 @@ function ValueStrip() {
 export function App() {
   const route = useHashRoute();
   const isPackagingPage = route === "packaging" || route.startsWith("packaging-");
+  const isFashionPage = route === "fashion" || route.startsWith("fashion-");
   useRevealOnScroll(route);
 
   useEffect(() => {
     const title = isPackagingPage
       ? "Packaging Design Portfolio | Narkis Zur"
+      : isFashionPage
+        ? "Fashion Design Portfolio | Narkis Zur"
       : "Narkis Zur | Graphic Designer";
     const description = isPackagingPage
       ? "Packaging design case studies by Narkis Zur, from brand-focused visual systems and retail packaging to dielines and print-ready production."
+      : isFashionPage
+        ? "Fashion and apparel design projects by Narkis Zur, developed from concept and graphics through production-ready garments."
       : "Narkis Zur is a multidisciplinary graphic designer creating thoughtful visual systems, packaging, branding, illustration, motion, and web experiences.";
     const url = isPackagingPage
       ? "https://narkiszdesign.github.io/NarkisProtfolio/#packaging"
+      : isFashionPage
+        ? "https://narkiszdesign.github.io/NarkisProtfolio/#fashion"
       : "https://narkiszdesign.github.io/NarkisProtfolio/#home";
     const image = isPackagingPage
       ? "https://narkiszdesign.github.io/NarkisProtfolio/assets/packaging/Blue_Store_Development_matt.png"
+      : isFashionPage
+        ? "https://narkiszdesign.github.io/NarkisProtfolio/assets/fashion/selected-01.png"
       : "https://narkiszdesign.github.io/NarkisProtfolio/assets/hero.jpg";
 
     const upsertMeta = (attribute: "name" | "property", key: string, content: string) => {
@@ -797,11 +1136,13 @@ export function App() {
       document.head.appendChild(canonical);
     }
     canonical.href = url;
-  }, [isPackagingPage]);
+  }, [isFashionPage, isPackagingPage]);
 
   useEffect(() => {
-    if (isPackagingPage) {
-      if (route === "packaging") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    if (isPackagingPage || isFashionPage) {
+      if (route === "packaging" || route === "fashion") {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      }
       return;
     }
 
@@ -810,13 +1151,15 @@ export function App() {
       if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [isPackagingPage, route]);
+  }, [isFashionPage, isPackagingPage, route]);
 
   return (
     <>
       <Header isPackagingPage={isPackagingPage} />
       {isPackagingPage ? (
         <PackagingPage />
+      ) : isFashionPage ? (
+        <FashionPage />
       ) : (
         <main className="home-page page-enter">
           <Hero />

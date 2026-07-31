@@ -143,7 +143,7 @@ export const categories: Category[] = [
   {
     title: "Fashion",
     label: "Fashion Design",
-    href: "#work",
+    href: "#fashion",
     variant: "placeholder",
     visual: {
       background: assetUrl("assets/categories/fashion-sketch.svg"),
