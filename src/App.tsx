@@ -231,6 +231,22 @@ const packagingSections = [
   { id: "packaging-bath", label: "Bath collection" },
 ];
 
+const packagingStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: "Packaging Design for Minene",
+  creator: {
+    "@type": "Person",
+    name: "Narkis Zur",
+    jobTitle: "Graphic Designer",
+  },
+  about: "A packaging design system for developmental toys and bath toy collections.",
+  genre: ["Packaging Design", "Graphic Design", "Brand Systems"],
+  url: "https://narkiszdesign.github.io/NarkisProtfolio/#packaging",
+  image:
+    "https://narkiszdesign.github.io/NarkisProtfolio/assets/packaging/Blue_Store_Development_matt.png",
+};
+
 function PackagingProjectNav() {
   const [activeSection, setActiveSection] = useState(packagingSections[0].id);
 
@@ -263,6 +279,7 @@ function PackagingProjectNav() {
               href={`#${section.id}`}
               className={activeSection === section.id ? "is-active" : undefined}
               aria-current={activeSection === section.id ? "location" : undefined}
+              onClick={() => setActiveSection(section.id)}
             >
               {section.label}
             </a>
@@ -274,8 +291,46 @@ function PackagingProjectNav() {
 }
 
 function PackagingPage() {
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
+
+  useEffect(() => {
+    if (!lightboxImage) return;
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setLightboxImage(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [lightboxImage]);
+
+  const openLightbox = (target: EventTarget | null) => {
+    const image = (target as HTMLElement | null)?.closest<HTMLImageElement>("img[data-lightbox]");
+    if (!image) return;
+    setLightboxImage({ src: image.currentSrc || image.src, alt: image.alt || "Packaging project detail" });
+  };
+
+  const handleProjectKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const image = (event.target as HTMLElement).closest<HTMLImageElement>("img[data-lightbox]");
+    if (!image) return;
+    event.preventDefault();
+    openLightbox(image);
+  };
+
   return (
-    <main className="packaging-page page-enter">
+    <main
+      className="packaging-page page-enter"
+      onClick={(event) => openLightbox(event.target)}
+      onKeyDown={handleProjectKeyDown}
+    >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(packagingStructuredData) }}
+      />
       <PackagingProjectNav />
       <section className="packaging-intro" aria-labelledby="packaging-title">
         <div className="packaging-intro-copy" data-reveal>
@@ -328,16 +383,16 @@ function PackagingPage() {
 
         <section className="collection-row packaging-container" id="packaging-in-store">
           <div className="collection-images" data-reveal>
-            <img src={assetUrl("assets/packaging/Developmental_cube_toy.png")} loading="lazy" decoding="async" alt="Developmental activity cube packaging" />
-            <img src={assetUrl("assets/packaging/Hanging_Development_matt.png")} loading="lazy" decoding="async" alt="Hanging developmental toy packaging" />
-            <img src={assetUrl("assets/packaging/Developmental_book_toy.png")} loading="lazy" decoding="async" alt="Developmental activity book packaging" />
+            <img src={assetUrl("assets/packaging/Developmental_cube_toy.png")} loading="lazy" decoding="async" alt="Developmental activity cube packaging" data-lightbox tabIndex={0} role="button" aria-label="View developmental activity cube packaging larger" />
+            <img src={assetUrl("assets/packaging/Hanging_Development_matt.png")} loading="lazy" decoding="async" alt="Hanging developmental toy packaging" data-lightbox tabIndex={0} role="button" aria-label="View hanging developmental toy packaging larger" />
+            <img src={assetUrl("assets/packaging/Developmental_book_toy.png")} loading="lazy" decoding="async" alt="Developmental activity book packaging" data-lightbox tabIndex={0} role="button" aria-label="View developmental activity book packaging larger" />
           </div>
           <div className="collection-note" data-reveal><h2>In store</h2><p>Consistent line look that stands out on the shelf and communicates quality, trust and care.</p></div>
         </section>
 
         <section className="dieline-panel packaging-container" id="packaging-dieline" data-reveal>
-          <div><h2>Dieline &amp; layout</h2><p>Complete packaging dieline and print layout.</p><img src={assetUrl("assets/packaging/פריסה והוראות-01.jpg")} loading="lazy" decoding="async" alt="Packaging dieline and print layout" /></div>
-          <div><h2>Step-by-step</h2><p>Packing &amp; Assembly Instructions</p><img src={assetUrl("assets/packaging/פריסה והוראות-02.jpg")} loading="lazy" decoding="async" alt="Packaging assembly instructions" /></div>
+          <div><h2>Dieline &amp; layout</h2><p>Complete packaging dieline and print layout.</p><img src={assetUrl("assets/packaging/פריסה והוראות-01.jpg")} loading="lazy" decoding="async" alt="Packaging dieline and print layout" data-lightbox tabIndex={0} role="button" aria-label="View packaging dieline and print layout larger" /></div>
+          <div><h2>Step-by-step</h2><p>Packing &amp; Assembly Instructions</p><img src={assetUrl("assets/packaging/פריסה והוראות-02.jpg")} loading="lazy" decoding="async" alt="Packaging assembly instructions" data-lightbox tabIndex={0} role="button" aria-label="View packaging assembly instructions larger" /></div>
         </section>
 
         <section className="bath-case packaging-container" id="packaging-bath">
@@ -346,8 +401,8 @@ function PackagingPage() {
             <h3>4-Piece Bath Toy Line<br />By Minene</h3>
             <p>The visual language combines illustration, product-part photography, and themed atmosphere to create a playful yet clear packaging system. Each pack explains the set content and assembly visually, while maintaining the brand&apos;s soft color palette and adding an engaging, playful twist.</p>
           </div>
-          <div className="bath-back" data-reveal><img className="bath-back-icon" src={assetUrl("assets/packaging/back of pack icon .png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Back of Pack</h3><p>Parent-friendly information explains the product benefits, how the pieces work together, and how to play with the set in a clear and visually engaging way.</p><img className="bath-back-image" src={assetUrl("assets/packaging/ChatGPT Image Jul 1, 2026, 12_14_29 PM.png")} loading="lazy" decoding="async" alt="Packaging back panel" /></div>
-          <img className="bath-main-image" src={assetUrl("assets/packaging/4 packaging bath toys sets.png")} loading="lazy" decoding="async" alt="Bath toy packaging collection" data-reveal />
+          <div className="bath-back" data-reveal><img className="bath-back-icon" src={assetUrl("assets/packaging/back of pack icon .png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Back of Pack</h3><p>Parent-friendly information explains the product benefits, how the pieces work together, and how to play with the set in a clear and visually engaging way.</p><img className="bath-back-image" src={assetUrl("assets/packaging/ChatGPT Image Jul 1, 2026, 12_14_29 PM.png")} loading="lazy" decoding="async" alt="Packaging back panel" data-lightbox tabIndex={0} role="button" aria-label="View packaging back panel larger" /></div>
+          <img className="bath-main-image" src={assetUrl("assets/packaging/4 packaging bath toys sets.png")} loading="lazy" decoding="async" alt="Bath toy packaging collection" data-reveal data-lightbox tabIndex={0} role="button" aria-label="View bath toy packaging collection larger" />
         </section>
 
         <section className="bath-footer packaging-container">
@@ -357,12 +412,43 @@ function PackagingPage() {
         <footer className="project-end" id="packaging-end" data-reveal>
           <p>Have a packaging project in mind?</p>
           <h2>Let&apos;s create something thoughtful.</h2>
+          <ul className="project-contact-details" aria-label="Collaboration details">
+            <li>Packaging, brand systems &amp; print-ready production</li>
+            <li>Remote collaboration welcome</li>
+            <li>Personal reply within 2 business days</li>
+          </ul>
           <div>
             <a className="project-end-secondary" href="#work">Explore more work</a>
+            <a className="project-end-secondary" href={`mailto:${siteConfig.email}`}>Email Narkis</a>
             <a className="peach-button" href={siteConfig.contactUrl} target="_blank" rel="noreferrer">Start a project <ArrowIcon /></a>
           </div>
         </footer>
       </article>
+      {lightboxImage ? (
+        <div
+          className="image-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Expanded view: ${lightboxImage.alt}`}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setLightboxImage(null);
+          }}
+        >
+          <button
+            className="image-lightbox-close"
+            type="button"
+            aria-label="Close expanded image"
+            onClick={() => setLightboxImage(null)}
+            autoFocus
+          >
+            ×
+          </button>
+          <figure>
+            <img src={lightboxImage.src} alt={lightboxImage.alt} />
+            <figcaption>{lightboxImage.alt}</figcaption>
+          </figure>
+        </div>
+      ) : null}
     </main>
   );
 }
@@ -667,6 +753,51 @@ export function App() {
   const route = useHashRoute();
   const isPackagingPage = route === "packaging" || route.startsWith("packaging-");
   useRevealOnScroll(route);
+
+  useEffect(() => {
+    const title = isPackagingPage
+      ? "Packaging Design Portfolio | Narkis Zur"
+      : "Narkis Zur | Graphic Designer";
+    const description = isPackagingPage
+      ? "Packaging design case studies by Narkis Zur, from brand-focused visual systems and retail packaging to dielines and print-ready production."
+      : "Narkis Zur is a multidisciplinary graphic designer creating thoughtful visual systems, packaging, branding, illustration, motion, and web experiences.";
+    const url = isPackagingPage
+      ? "https://narkiszdesign.github.io/NarkisProtfolio/#packaging"
+      : "https://narkiszdesign.github.io/NarkisProtfolio/#home";
+    const image = isPackagingPage
+      ? "https://narkiszdesign.github.io/NarkisProtfolio/assets/packaging/Blue_Store_Development_matt.png"
+      : "https://narkiszdesign.github.io/NarkisProtfolio/assets/hero.jpg";
+
+    const upsertMeta = (attribute: "name" | "property", key: string, content: string) => {
+      let element = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
+      if (!element) {
+        element = document.createElement("meta");
+        element.setAttribute(attribute, key);
+        document.head.appendChild(element);
+      }
+      element.content = content;
+    };
+
+    document.title = title;
+    upsertMeta("name", "description", description);
+    upsertMeta("property", "og:title", title);
+    upsertMeta("property", "og:description", description);
+    upsertMeta("property", "og:type", "website");
+    upsertMeta("property", "og:url", url);
+    upsertMeta("property", "og:image", image);
+    upsertMeta("name", "twitter:card", "summary_large_image");
+    upsertMeta("name", "twitter:title", title);
+    upsertMeta("name", "twitter:description", description);
+    upsertMeta("name", "twitter:image", image);
+
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = url;
+  }, [isPackagingPage]);
 
   useEffect(() => {
     if (isPackagingPage) {
