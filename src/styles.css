@@ -869,7 +869,7 @@ main {
   overflow: hidden;
 }
 
-.fashion-overview-photo {
+.fashion-overview-video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -880,6 +880,7 @@ main {
 
 .fashion-overview-copy {
   position: absolute;
+  z-index: 1;
   left: calc(50% + 157px);
   top: 101px;
   width: 441px;
@@ -921,6 +922,7 @@ main {
 
 .fashion-process-grid {
   display: grid;
+  z-index: 1;
   grid-template-columns: repeat(4, 262px);
   gap: 16px;
   position: absolute;
@@ -1245,9 +1247,21 @@ main {
   height: 259px;
   place-items: center;
   background: #efebe8;
+  overflow: hidden;
+}
+
+.fashion-details-title video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .fashion-details-title h2 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
   font-size: 35px;
 }
 
@@ -2176,7 +2190,7 @@ main {
   .fashion-intro-shirt { left: 59%; }
 
   .fashion-overview { display: grid; overflow: visible; background: #fcf9f7; }
-  .fashion-overview-photo { position: relative; height: min(105vw, 620px); object-position: 34% center; }
+  .fashion-overview-video { position: relative; height: min(105vw, 620px); object-position: 34% center; }
   .fashion-overview-copy { position: relative; left: auto; top: auto; width: auto; padding: 42px 24px 18px; }
   .fashion-overview-copy h2 { font-size: 30px; }
   .fashion-overview-copy h3 { font-size: 22px; }

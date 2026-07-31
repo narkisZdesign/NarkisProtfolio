@@ -358,7 +358,18 @@ function FashionPage() {
         </section>
 
         <section className="fashion-overview" aria-labelledby="fashion-overview-title">
-          <img className="fashion-overview-photo" src={assetUrl("assets/fashion/hero-main.png")} alt="Child wearing a charcoal graphic T-shirt" />
+          <video
+            className="fashion-overview-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={assetUrl("assets/fashion/hero-main.png")}
+            aria-hidden="true"
+          >
+            <source src={assetUrl("assets/fashion/garment-concept-production.mp4")} type="video/mp4" />
+          </video>
           <div className="fashion-overview-copy">
             <h2 id="fashion-overview-title">Garment Design From<br />Concept To Production</h2>
             <h3>Line Bar Zomer<br />By Minene</h3>
@@ -431,7 +442,12 @@ function FashionPage() {
           </div>
         </section>
 
-        <section className="fashion-details-title"><h2>Design Is In The Details</h2></section>
+        <section className="fashion-details-title">
+          <video autoPlay muted loop playsInline preload="metadata" aria-hidden="true">
+            <source src={assetUrl("assets/fashion/design-details.mp4")} type="video/mp4" />
+          </video>
+          <h2>Design Is In The Details</h2>
+        </section>
 
         <section className="fashion-tags" aria-labelledby="fashion-tags-title">
           <div className="fashion-tags-images">
