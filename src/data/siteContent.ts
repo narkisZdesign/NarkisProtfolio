@@ -36,11 +36,10 @@ export type Category = {
   title: string;
   label?: string;
   href: string;
-  variant?: "video" | "placeholder";
   visual: {
     background: string;
     object: string;
-    objectHover?: string;
+    video?: string;
     objectAlt: string;
   };
 };
@@ -131,69 +130,41 @@ export const navItems: NavItem[] = [
 export const categories: Category[] = [
   {
     title: "Packaging",
-    label: "Print & Packaging",
     href: "#packaging",
-    variant: "placeholder",
     visual: {
-      background: assetUrl("assets/categories/packaging-sketch.svg"),
-      object: assetUrl("assets/categories/packaging-object.svg"),
-      objectAlt: "Packaging design asset placeholder",
+      background: assetUrl("assets/categories/packaging-sketch.webp"),
+      object: assetUrl("assets/categories/packaging.webp"),
+      video: assetUrl("assets/categories/packaging.mp4"),
+      objectAlt: "Sage green packaging box",
     },
   },
   {
     title: "Fashion",
-    label: "Fashion Design",
     href: "#fashion",
-    variant: "placeholder",
     visual: {
-      background: assetUrl("assets/categories/fashion-sketch.svg"),
-      object: assetUrl("assets/categories/fashion-object.svg"),
-      objectAlt: "Fashion design asset placeholder",
+      background: assetUrl("assets/categories/fashion-sketch.webp"),
+      object: assetUrl("assets/categories/fashion.webp"),
+      objectAlt: "Sage green shirt",
     },
   },
   {
-    title: "Video",
-    label: "Video & Motion",
-    href: "#work",
-    variant: "video",
+    title: "Products",
+    href: "#products",
     visual: {
-      background: assetUrl("assets/video/video_wireframe.jpeg"),
-      object: assetUrl("assets/video/gimbal_still.webp"),
-      objectHover: assetUrl("assets/video/gimbal_rotate.gif"),
-      objectAlt: "Video camera gimbal",
+      background: assetUrl("assets/categories/products-sketch.webp"),
+      object: assetUrl("assets/categories/products-loop.webp"),
+      video: assetUrl("assets/categories/products-loop.mp4"),
+      objectAlt: "Sage green product display",
     },
   },
   {
     title: "Branding",
-    label: "Brand Identity",
-    href: "#work",
-    variant: "placeholder",
+    href: "#branding",
     visual: {
-      background: assetUrl("assets/categories/branding-sketch.svg"),
-      object: assetUrl("assets/categories/branding-object.svg"),
-      objectAlt: "Branding design asset placeholder",
-    },
-  },
-  {
-    title: "Illustration",
-    label: "Illustration",
-    href: "#work",
-    variant: "placeholder",
-    visual: {
-      background: assetUrl("assets/categories/illustration-sketch.svg"),
-      object: assetUrl("assets/categories/illustration-object.svg"),
-      objectAlt: "Illustration design asset placeholder",
-    },
-  },
-  {
-    title: "Web Design",
-    label: "Web Design",
-    href: "#work",
-    variant: "placeholder",
-    visual: {
-      background: assetUrl("assets/categories/web-design-sketch.svg"),
-      object: assetUrl("assets/categories/web-design-object.svg"),
-      objectAlt: "Web design asset placeholder",
+      background: assetUrl("assets/categories/branding-sketch.webp"),
+      object: assetUrl("assets/categories/branding.webp"),
+      video: assetUrl("assets/categories/branding.mp4"),
+      objectAlt: "NZ brand seal",
     },
   },
 ];

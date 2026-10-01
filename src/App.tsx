@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { CategoryCard } from "./components/CategoryCard";
+import { Hero } from "./components/Hero";
+import { ProductsPage } from "./components/ProductsPage";
+import { BrandingPage } from "./components/BrandingPage";
 import {
   arrowIcon as ArrowIcon,
   assetUrl,
@@ -11,19 +15,7 @@ import {
   values,
 } from "./data/siteContent";
 
-const HERO_SCROLL_FRAME_COUNT = 262;
-const HERO_SCROLL_WHEEL_FACTOR = 0.052;
-const HERO_SCROLL_TOUCH_FACTOR = 0.12;
-const HERO_SCROLL_EASE = 0.24;
-
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-
-const heroScrollFrame = (index: number) =>
-  assetUrl(`assets/hero/scroll_frames/frame_${String(index + 1).padStart(3, "0")}.webp`);
-
-const HERO_INTRO_VIDEO = assetUrl("assets/hero/intro.mp4");
-const HERO_INTRO_POSTER = assetUrl("assets/hero/intro-poster.webp");
-const HERO_REDUCED_MOTION_POSTER = assetUrl("assets/hero/reduced-motion-poster.webp");
 
 function useRevealOnScroll(dependency: string) {
   useEffect(() => {
@@ -630,281 +622,22 @@ function PackagingPage() {
   );
 }
 
-function Hero() {
-  const [introComplete, setIntroComplete] = useState(false);
-  const [scrollFrameReady, setScrollFrameReady] = useState(false);
-  const [reducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  const heroSectionRef = useRef<HTMLElement | null>(null);
-  const scrollFrameRef = useRef<HTMLImageElement | null>(null);
-  const introVideoRef = useRef<HTMLVideoElement | null>(null);
-  const heroCopyRef = useRef<HTMLDivElement | null>(null);
-  const frameValueRef = useRef(0);
-  const targetFrameRef = useRef(0);
-  const animationFrameRef = useRef<number | null>(null);
-  const lastRenderedFrameRef = useRef(0);
-  const touchYRef = useRef<number | null>(null);
-  const introCompleteRef = useRef(false);
-  const pendingScrollRef = useRef(false);
-  const commitTargetFrameRef = useRef<(nextValue: number) => void>(() => undefined);
-  const jumpToFrameRef = useRef<(nextValue: number) => void>(() => undefined);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      const finalFrame = HERO_SCROLL_FRAME_COUNT - 1;
-      frameValueRef.current = finalFrame;
-      targetFrameRef.current = finalFrame;
-      lastRenderedFrameRef.current = finalFrame;
-      introCompleteRef.current = true;
-      setIntroComplete(true);
-      return;
-    }
-
-    let cancelled = false;
-    const preloadOrder = Array.from({ length: HERO_SCROLL_FRAME_COUNT }, (_, index) => index);
-    let preloadIndex = 0;
-
-    const preloadFrame = (index: number) => new Promise<void>((resolve) => {
-      const image = new Image();
-      image.decoding = "async";
-      image.onload = () => resolve();
-      image.onerror = () => resolve();
-      image.src = heroScrollFrame(index);
-    });
-
-    const preloadWorker = async () => {
-      while (!cancelled && preloadIndex < preloadOrder.length) {
-        const nextIndex = preloadOrder[preloadIndex];
-        preloadIndex += 1;
-        await preloadFrame(nextIndex);
-      }
-    };
-
-    const preloadTimer = window.setTimeout(() => {
-      void Promise.all(Array.from({ length: 4 }, () => preloadWorker()));
-    }, 180);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(preloadTimer);
-      if (animationFrameRef.current !== null) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [reducedMotion]);
-
-  useEffect(() => {
-    if (reducedMotion) return;
-
-    const maxFrame = HERO_SCROLL_FRAME_COUNT - 1;
-    const atTop = () => window.scrollY <= 2;
-    const renderFrame = (value: number) => {
-      const rounded = Math.round(clamp(value, 0, maxFrame));
-      if (rounded === lastRenderedFrameRef.current) return;
-
-      lastRenderedFrameRef.current = rounded;
-      const progress = rounded / maxFrame;
-      const frame = scrollFrameRef.current;
-      if (frame) {
-        frame.src = heroScrollFrame(rounded);
-        frame.dataset.frame = String(rounded + 1);
-      }
-
-      if (heroCopyRef.current) {
-        heroCopyRef.current.style.opacity = String(clamp((progress - 0.78) / 0.12, 0, 1));
-      }
-
-      heroSectionRef.current?.classList.toggle("is-sketch", progress < 0.42);
-    };
-
-    const stepTowardTarget = () => {
-      const current = frameValueRef.current;
-      const target = targetFrameRef.current;
-      const diff = target - current;
-
-      if (Math.abs(diff) < 0.35) {
-        frameValueRef.current = target;
-        renderFrame(target);
-        animationFrameRef.current = null;
-        return;
-      }
-
-      const next = current + diff * HERO_SCROLL_EASE;
-      frameValueRef.current = next;
-      renderFrame(next);
-      animationFrameRef.current = window.requestAnimationFrame(stepTowardTarget);
-    };
-
-    const commitTargetFrame = (nextValue: number) => {
-      targetFrameRef.current = clamp(nextValue, 0, maxFrame);
-      if (animationFrameRef.current === null) {
-        animationFrameRef.current = window.requestAnimationFrame(stepTowardTarget);
-      }
-    };
-
-    const jumpToFrame = (nextValue: number) => {
-      const nextFrame = clamp(nextValue, 0, maxFrame);
-      frameValueRef.current = nextFrame;
-      targetFrameRef.current = nextFrame;
-      renderFrame(nextFrame);
-    };
-
-    commitTargetFrameRef.current = commitTargetFrame;
-    jumpToFrameRef.current = jumpToFrame;
-
-    const shouldCapture = (delta: number) => {
-      if (!atTop() || Math.abs(delta) < 0.5) return false;
-      if (!introCompleteRef.current) return delta > 0;
-      if (delta > 0 && frameValueRef.current < maxFrame - 0.35) return true;
-      if (delta < 0 && frameValueRef.current > 0.35) return true;
-      return false;
-    };
-
-    const onWheel = (event: WheelEvent) => {
-      if (!shouldCapture(event.deltaY)) return;
-      event.preventDefault();
-
-      if (!introCompleteRef.current) {
-        pendingScrollRef.current = true;
-        return;
-      }
-
-      commitTargetFrame(targetFrameRef.current + event.deltaY * HERO_SCROLL_WHEEL_FACTOR);
-    };
-
-    const onTouchStart = (event: TouchEvent) => {
-      touchYRef.current = event.touches[0]?.clientY ?? null;
-    };
-
-    const onTouchMove = (event: TouchEvent) => {
-      const previousY = touchYRef.current;
-      const currentY = event.touches[0]?.clientY ?? previousY;
-      if (previousY === null || currentY === null) return;
-
-      const delta = previousY - currentY;
-      touchYRef.current = currentY;
-
-      if (!shouldCapture(delta)) return;
-      event.preventDefault();
-
-      if (!introCompleteRef.current) {
-        pendingScrollRef.current = true;
-        return;
-      }
-
-      commitTargetFrame(targetFrameRef.current + delta * HERO_SCROLL_TOUCH_FACTOR);
-    };
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      const forwardKeys = ["ArrowDown", "PageDown", " ", "Spacebar"];
-      const backKeys = ["ArrowUp", "PageUp"];
-      const isForward = forwardKeys.includes(event.key);
-      const isBack = backKeys.includes(event.key);
-      if (!isForward && !isBack) return;
-
-      const delta = isForward ? 18 : -18;
-      if (!shouldCapture(delta)) return;
-      event.preventDefault();
-
-      if (!introCompleteRef.current) {
-        pendingScrollRef.current = true;
-        return;
-      }
-
-      commitTargetFrame(targetFrameRef.current + delta);
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("keydown", onKeyDown);
-      commitTargetFrameRef.current = () => undefined;
-      jumpToFrameRef.current = () => undefined;
-    };
-  }, [reducedMotion]);
-
-  const finishIntro = () => {
-    if (introCompleteRef.current) return;
-
-    introCompleteRef.current = true;
-    introVideoRef.current?.pause();
-    setIntroComplete(true);
-
-    if (pendingScrollRef.current) {
-      pendingScrollRef.current = false;
-      commitTargetFrameRef.current(1);
-    }
-  };
-
-  const handleScrollCue = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!introCompleteRef.current) {
-      event.preventDefault();
-      pendingScrollRef.current = true;
-      return;
-    }
-
-    if (frameValueRef.current < HERO_SCROLL_FRAME_COUNT - 1 && !reducedMotion) {
-      event.preventDefault();
-      jumpToFrameRef.current(HERO_SCROLL_FRAME_COUNT - 1);
-      window.setTimeout(() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" }), 120);
-    }
-  };
-
-  const showScrollSequence = introComplete && scrollFrameReady;
-
-  return (
-    <section
-      className={reducedMotion ? "hero-section" : "hero-section is-sketch"}
-      ref={heroSectionRef}
-      id="home"
-      aria-label="Portfolio introduction"
-    >
-      <div className={showScrollSequence ? "hero-image-wrap is-scroll-sequence" : "hero-image-wrap"}>
-        <img
-          className="hero-media hero-scroll-frame"
-          ref={scrollFrameRef}
-          src={reducedMotion ? HERO_REDUCED_MOTION_POSTER : heroScrollFrame(0)}
-          data-frame={reducedMotion ? HERO_SCROLL_FRAME_COUNT : 1}
-          alt="Graphic designer studio scene transitioning from sketch to polished design"
-          draggable="false"
-          onLoad={() => setScrollFrameReady(true)}
-        />
-        {reducedMotion ? null : (
-          <video
-            className="hero-media hero-intro-video"
-            ref={introVideoRef}
-            src={HERO_INTRO_VIDEO}
-            poster={HERO_INTRO_POSTER}
-            autoPlay
-            muted
-            playsInline
-            preload="auto"
-            aria-hidden="true"
-            onEnded={finishIntro}
-            onError={finishIntro}
-          />
-        )}
-        <div className="hero-copy" ref={heroCopyRef} style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <h1>{siteConfig.heroTitle}</h1>
-          <p className="hero-subtitle">{siteConfig.heroSubtitle}</p>
-          <p>{siteConfig.heroBody}</p>
-        </div>
-        <a className="scroll-cue" href="#work" aria-label="Scroll to work" onClick={handleScrollCue}>
-          <span />
-        </a>
-      </div>
-    </section>
-  );
-}
-
 function Categories() {
   return (
     <section className="section categories-section" id="work" aria-labelledby="work-title">
+      <svg width="0" height="0" aria-hidden="true" focusable="false" className="category-media-filters">
+        <defs>
+          <filter id="product-remove-background" colorInterpolationFilters="sRGB" x="-15%" y="-15%" width="130%" height="130%">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -6 -6 -6 0 15.5" result="keyed" />
+            <feComposite in="keyed" in2="SourceGraphic" operator="in" />
+          </filter>
+          <filter id="category-remove-white" colorInterpolationFilters="sRGB" x="-15%" y="-15%" width="130%" height="130%">
+            {/* Key the near-white backdrop while keeping the colored object opaque. */}
+            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -5 -5 -5 0 14" result="keyed" />
+            <feComposite in="keyed" in2="SourceGraphic" operator="in" />
+          </filter>
+        </defs>
+      </svg>
       <div className="section-heading" data-reveal>
         <span>What I do</span>
         <h2 id="work-title">Design across disciplines.</h2>
@@ -912,52 +645,9 @@ function Categories() {
       </div>
 
       <div className="category-grid">
-        {categories.map((category, index) => {
-          const isVideo = category.variant === "video";
-
-          return (
-            <a
-              className={`category-card category-card-featured ${isVideo ? "video-category-card" : "asset-category-card"}`}
-              href={category.href}
-              key={category.title}
-              data-reveal
-              style={{ "--delay": `${index * 60}ms` } as CSSProperties}
-            >
-              <span className={isVideo ? "video-card-visual" : "asset-card-visual"}>
-                <img
-                  className={isVideo ? "video-wireframe" : "category-background"}
-                  src={category.visual.background}
-                  loading="lazy"
-                  decoding="async"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <span className={isVideo ? "gimbal-wrap" : "category-object-wrap"} aria-hidden="true">
-                  <img
-                    className={isVideo ? "gimbal-still" : "category-object"}
-                    src={category.visual.object}
-                    loading="lazy"
-                    decoding="async"
-                    alt=""
-                  />
-                  {category.visual.objectHover ? (
-                    <img
-                      className={isVideo ? "gimbal-gif" : "category-object-hover"}
-                      src={category.visual.objectHover}
-                      loading="lazy"
-                      decoding="async"
-                      alt=""
-                    />
-                  ) : null}
-                </span>
-                <strong>{category.title}</strong>
-                <span className="round-arrow video-visual-arrow" aria-hidden="true">
-                  <ArrowIcon />
-                </span>
-              </span>
-            </a>
-          );
-        })}
+        {categories.map((category, index) => (
+          <CategoryCard key={category.title} category={category} index={index} />
+        ))}
       </div>
     </section>
   );
@@ -1099,28 +789,46 @@ export function App() {
   const route = useHashRoute();
   const isPackagingPage = route === "packaging" || route.startsWith("packaging-");
   const isFashionPage = route === "fashion" || route.startsWith("fashion-");
+  const isProductsPage = route === "products" || route.startsWith("products-");
+  const isBrandingPage = route === "branding" || route.startsWith("branding-");
   useRevealOnScroll(route);
 
   useEffect(() => {
-    const title = isPackagingPage
+    const title = isBrandingPage
+      ? "Branding Portfolio | Narkis Zur"
+      : isPackagingPage
       ? "Packaging Design Portfolio | Narkis Zur"
       : isFashionPage
         ? "Fashion Design Portfolio | Narkis Zur"
+      : isProductsPage
+        ? "Product & Brand Experiences Portfolio | Narkis Zur"
       : "Narkis Zur | Graphic Designer";
-    const description = isPackagingPage
+    const description = isBrandingPage
+      ? "Brand identities and visual worlds by Narkis Zur: HaShunit’s interactive underwater learning experience and Makbilim Time-Travel Academy."
+      : isPackagingPage
       ? "Packaging design case studies by Narkis Zur, from brand-focused visual systems and retail packaging to dielines and print-ready production."
       : isFashionPage
         ? "Fashion and apparel design projects by Narkis Zur, developed from concept and graphics through production-ready garments."
+      : isProductsPage
+        ? "Showroom props, branded signage, large-scale displays and store launch experiences designed by Narkis Zur."
       : "Narkis Zur is a multidisciplinary graphic designer creating thoughtful visual systems, packaging, branding, illustration, motion, and web experiences.";
-    const url = isPackagingPage
+    const url = isBrandingPage
+      ? "https://narkiszdesign.github.io/NarkisProtfolio/#branding"
+      : isPackagingPage
       ? "https://narkiszdesign.github.io/NarkisProtfolio/#packaging"
       : isFashionPage
         ? "https://narkiszdesign.github.io/NarkisProtfolio/#fashion"
+      : isProductsPage
+        ? "https://narkiszdesign.github.io/NarkisProtfolio/#products"
       : "https://narkiszdesign.github.io/NarkisProtfolio/#home";
-    const image = isPackagingPage
+    const image = isBrandingPage
+      ? "https://narkiszdesign.github.io/NarkisProtfolio/assets/branding/f322d.png"
+      : isPackagingPage
       ? "https://narkiszdesign.github.io/NarkisProtfolio/assets/packaging/Blue_Store_Development_matt.png"
       : isFashionPage
         ? "https://narkiszdesign.github.io/NarkisProtfolio/assets/fashion/selected-01.png"
+      : isProductsPage
+        ? "https://narkiszdesign.github.io/NarkisProtfolio/assets/products/4a90f.png"
       : "https://narkiszdesign.github.io/NarkisProtfolio/assets/hero.jpg";
 
     const upsertMeta = (attribute: "name" | "property", key: string, content: string) => {
@@ -1152,30 +860,40 @@ export function App() {
       document.head.appendChild(canonical);
     }
     canonical.href = url;
-  }, [isFashionPage, isPackagingPage]);
+  }, [isBrandingPage, isFashionPage, isPackagingPage, isProductsPage]);
 
   useEffect(() => {
-    if (isPackagingPage || isFashionPage) {
-      if (route === "packaging" || route === "fashion") {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    if (isPackagingPage || isFashionPage || isProductsPage || isBrandingPage) {
+      if (route === "packaging" || route === "fashion" || route === "products" || route === "branding") {
+        window.scrollTo({ top: 0, left: 0, behavior: isProductsPage || isBrandingPage ? "instant" : "auto" });
+      } else if (isBrandingPage) {
+        document.getElementById(route)?.scrollIntoView({ behavior: "auto", block: "start" });
       }
       return;
     }
 
     const frame = window.requestAnimationFrame(() => {
+      if (route === "home") {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        return;
+      }
       const target = document.getElementById(route);
       if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [isFashionPage, isPackagingPage, route]);
+  }, [isBrandingPage, isFashionPage, isPackagingPage, isProductsPage, route]);
 
   return (
     <>
-      <Header isPackagingPage={isPackagingPage} />
+      <Header isPackagingPage={isPackagingPage || isFashionPage || isProductsPage || isBrandingPage} />
       {isPackagingPage ? (
         <PackagingPage />
       ) : isFashionPage ? (
         <FashionPage />
+      ) : isProductsPage ? (
+        <ProductsPage />
+      ) : isBrandingPage ? (
+        <BrandingPage />
       ) : (
         <main className="home-page page-enter">
           <Hero />
