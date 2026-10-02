@@ -2,9 +2,7 @@ import { assetUrl } from "./siteContent";
 
 export const productAsset = (filename: string) => assetUrl(`assets/products/${filename}`);
 
-// Set this to the horse section's video filename when the footage is ready.
-// Example: assetUrl("assets/products/horse.mp4").
-export const horseVideoSrc: string | undefined = undefined;
+export const horseVideoSrc = productAsset("horsevideo.mp4");
 
 export type ProductCrop = { width: number; height: number; left: number; top: number; flip?: boolean };
 export type ProductPhoto = { id: string; file: string; alt: string; crop?: ProductCrop; aspectRatio?: string };

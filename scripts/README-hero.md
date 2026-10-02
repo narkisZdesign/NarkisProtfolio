@@ -1,5 +1,33 @@
 # Hero media pipeline
 
+The active homepage uses **home hero.mp4** (24 fps, 241 frames). Its opening
+plays from 00:00 through exactly 00:02. Scroll frame 001 is source frame 48,
+at 00:02; frame 193 is the last source frame, at 00:10. Both responsive
+variants use the same timestamps and crop consistently across the handoff.
+
+Rebuild the active assets and their frontend metadata from the repository root:
+
+```powershell
+python scripts/build-home-hero.py --source 'PATH-TO-home hero.mp4'
+```
+
+This requires only FFmpeg and ffprobe on PATH. Output goes to
+`public/assets/hero/home-hero/{wide,portrait}/`, with timing metadata in
+`src/data/heroMedia.json`. The muted intro includes the 00:02 frame; a video
+frame callback pauses playback at that timestamp. The first decoded scroll
+frame replaces it only when ready. Scrolling during the opening does not
+interrupt playback; the current position becomes the scroll starting point
+when the opening finishes. The remaining frames advance with native scroll
+over the remaining hero distance. During the latter part of the desktop scroll,
+the centered framing eases into the 1180 × 478 crop from the supplied reference.
+The video scales uniformly, and the copy stays anchored to the composition.
+The pinning distance remains two viewport heights while the frame changes size.
+A narrow 16–28 px white edge fade appears only over the final 6% of progress,
+below the character's feet. Reduced-motion visitors retain a static final poster
+with the final framing.
+
+## Previous extended hero
+
 `build-hero.py` protects the original 3840 × 2160 center and adds 600 pixels of
 background on each side. It does not regenerate the woman, lettering or camera
 motion. Six Higgsfield FLUX.2 Pro outpaint references supply low-frequency

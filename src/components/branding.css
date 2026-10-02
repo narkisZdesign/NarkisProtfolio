@@ -98,8 +98,8 @@
 .branding-gallery-row:last-child > :nth-child(3) { flex: 374; }
 .branding-photo { position: relative; min-width: 0; overflow: hidden; border-radius: 14px; }
 .branding-photo > img { width: 100%; height: 100%; object-fit: cover; max-width: none; }
-.branding-details { height: 259px; position: relative; overflow: hidden; background: #efe9e5; display: grid; place-items: center; }
-.branding-details > video { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.branding-details { aspect-ratio: 1920 / 546; position: relative; overflow: hidden; background: #efe9e5; }
+.branding-details > video { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; }
 
 @media (max-width: 1000px) {
   .branding-hero-layout { grid-template-columns: 1fr 1fr; }
@@ -157,7 +157,6 @@
   .branding-gallery { margin-block: 40px; }
   .branding-gallery-row { display: grid; grid-template-columns: 1fr 1fr; }
   .branding-gallery-row:last-child > :last-child { grid-column: 1 / -1; }
-  .branding-details { height: 220px; }
 }
 
 /* CSS fallback also applies before the effect runs or if JavaScript is unavailable. */

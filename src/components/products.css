@@ -79,9 +79,8 @@
 .products-showroom-gallery .products-photo-swap:is(:hover, :focus-visible) .products-photo-zoom { transform: none; }
 .products-photo-swap:is(:hover, :focus-visible) .products-photo-alternate { opacity: 1; }
 
-.products-horse { position: relative; display: grid; place-items: center; height: 259px; overflow: hidden; background: #efe9e5; }
-.products-horse h2 { position: relative; z-index: 1; font-weight: 600; text-align: center; text-shadow: 0 0 9.9px white; }
-.products-horse-video { position: absolute; inset: -22px 0; width: 100%; height: calc(100% + 44px); object-fit: cover; }
+.products-horse { position: relative; height: var(--details-video-height); overflow: hidden; background: #efe9e5; }
+.products-horse-video { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .products-display { padding-top: 88px; padding-bottom: 30px; }
 .products-project-row { display: grid; gap: 65px; }
@@ -97,14 +96,14 @@
 @keyframes products-card-loop { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 .products-standout { background: #05353d; color: white; overflow: hidden; box-shadow: var(--products-shadow); }
-.products-standout-layout { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 25px; padding: 34px 0 38px; }
-.products-standout-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; width: min(627px, 100%); height: auto; }
+.products-standout-layout { display: grid; grid-template-columns: minmax(0, 627fr) minmax(0, 427fr); align-items: center; gap: clamp(12px, 4vw, 65px); padding-block: 34px; }
+.products-standout-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: clamp(4px, 1vw, 12px); width: 100%; min-width: 0; height: auto; }
 .products-standout-photos > :is(figure, div) { aspect-ratio: 201 / 187; }
-.products-standout-copy { width: min(427px, 100%); text-align: center; }
+.products-standout-copy { min-width: 0; text-align: left; }
 .products-standout-middle { position: relative; }
 .products-standout-overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
-.products-standout-copy h2 { font-size: 26px; font-weight: 600; line-height: 1.21; }
-.products-standout-copy p { margin-top: 20px; font-size: 16px; font-weight: 600; line-height: 1.21; }
+.products-standout-copy h2 { font-size: clamp(18px, 2.2vw, 26px); font-weight: 600; line-height: 1.21; }
+.products-standout-copy p { margin-top: clamp(10px, 1.6vw, 20px); font-size: clamp(12px, 1.4vw, 16px); font-weight: 600; line-height: 1.35; }
 
 .products-mirror { padding-top: 96px; }
 .products-mirror-row { grid-template-columns: minmax(0, 432fr) minmax(0, 627fr); padding-right: 24px; }
@@ -168,11 +167,6 @@
   .products-feature { height: 230px; }
   .products-feature h3 { left: 12px; right: 12px; font-size: 18px; }
   .products-feature p { font-size: 13px; line-height: 18px; }
-  .products-standout-layout { gap: 30px; }
-  .products-standout-photos { height: auto; }
-  .products-standout-photos > :is(figure, div) { aspect-ratio: 201 / 187; }
-  .products-standout-copy h2 { font-size: 23px; }
-  .products-standout-copy p { margin-top: 12px; font-size: 14px; }
   .products-mirror-subtitle { font-size: 22px; }
   .products-mirror-rule { margin-top: 22px; }
   .products-mirror-features .products-feature { height: 230px; }
@@ -205,8 +199,6 @@
   .products-features-wide .products-feature p { top: 120px; }
   .products-gallery-row-bottom { grid-template-columns: 1fr 1fr; }
   .products-gallery-row-bottom .products-photo:last-child { grid-column: 1 / -1; aspect-ratio: 374 / 275; }
-  .products-horse { height: 220px; }
-  .products-horse h2 { font-size: 27px; }
   .products-display { padding-top: 54px; padding-bottom: 28px; }
   .products-project-row { grid-template-columns: 1fr; gap: 32px; }
   .products-project-copy h2 { font-size: 32px; }
@@ -219,10 +211,7 @@
   .products-feature p { font-size: 14px; line-height: 19.4px; }
   .products-card-strip { margin-top: 36px; height: 62px; }
   .products-card-sequence img { width: 949px; flex-basis: 949px; height: 62px; }
-  .products-standout { height: auto; }
-  .products-standout-layout { grid-template-columns: 1fr; gap: 25px; padding: 32px 0; }
-  .products-standout-copy h2 { font-size: 26px; }
-  .products-standout-copy p { max-width: 430px; font-size: 16px; }
+  .products-standout-layout { padding-block: 24px; }
   .products-mirror { padding-top: 54px; }
   .products-mirror-subtitle { font-size: 23px; }
   .products-mirror-features { margin-top: 30px; }

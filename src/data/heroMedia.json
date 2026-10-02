@@ -1,0 +1,11 @@
+{
+  "assetRoot": "assets/hero/home-hero",
+  "sourceName": "home hero.mp4",
+  "fps": 24.0,
+  "introSeconds": 2,
+  "firstScrollFrame": 48,
+  "frameCount": 193,
+  "lastFrameSeconds": 10.0,
+  "wideWidth": 1920,
+  "wideHeight": 824
+}

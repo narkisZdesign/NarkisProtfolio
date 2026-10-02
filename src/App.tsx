@@ -339,11 +339,11 @@ function PackagingTagCarousel() {
 }
 
 const fashionSelectedGarments = [
-  { src: "assets/fashion/selected-01.png", alt: "Boy wearing a charcoal sleeveless Maybe Later set" },
-  { src: "assets/fashion/selected-02.png", alt: "Girl wearing a Berry Sweet graphic T-shirt" },
-  { src: "assets/fashion/selected-03.png", alt: "Child wearing an Easy Peasy lemon graphic T-shirt" },
-  { src: "assets/fashion/selected-04.png", alt: "Boy wearing a Champion sports set" },
-  { src: "assets/fashion/selected-05.png", alt: "Boy wearing a white sleeveless graphic set" },
+  { src: "assets/fashion/selected-01.png", hoverSrc: "assets/fashion/selected-01-hover.png", alt: "Boy wearing a charcoal sleeveless Maybe Later set" },
+  { src: "assets/fashion/selected-02.png", hoverSrc: "assets/fashion/selected-02-hover.jpg", alt: "Girl wearing a Berry Sweet graphic T-shirt" },
+  { src: "assets/fashion/selected-03.png", hoverSrc: "assets/fashion/selected-03-hover.png", alt: "Child wearing an Easy Peasy lemon graphic T-shirt" },
+  { src: "assets/fashion/selected-04.png", hoverSrc: "assets/fashion/selected-04-hover.jpg", alt: "Boy wearing a Champion sports set" },
+  { src: "assets/fashion/selected-05.png", hoverSrc: "assets/fashion/selected-05-hover.png", alt: "Boy wearing a white sleeveless graphic set" },
 ];
 
 const fashionProcess = [
@@ -370,16 +370,24 @@ const fashionProcess = [
 ];
 
 const fashionSketchSteps = [
-  { src: "assets/fashion/sketch-01.png", alt: "Initial hand-drawn lettering sketch" },
-  { src: "assets/fashion/sketch-02.png", alt: "Digital lettering artwork development" },
-  { src: "assets/fashion/sketch-03.png", alt: "Graphic applied to a black sleeveless top" },
-  { src: "assets/fashion/sketch-04.png", alt: "Graphic applied to a black T-shirt" },
-  { src: "assets/fashion/sketch-05.png", alt: "Finished garment worn by a child" },
+  { src: "assets/fashion/sketch-01.png", alt: "Initial hand-drawn lettering sketch", title: "Lettering Sketch", description: "Exploring the lettering and composition by hand." },
+  { src: "assets/fashion/sketch-02.png", alt: "Production sheet with lettering artwork and print specifications", title: "Production Artwork", description: "Refining the graphic, colors and print specifications." },
+  { src: "assets/fashion/sketch-03.png", alt: "Printed fabric sample and matching garment tag", title: "Print Sample", description: "Checking the print on fabric alongside the garment tag." },
+  { src: "assets/fashion/sketch-04.png", alt: "Lettering graphic positioned on a charcoal T-shirt mockup", title: "Garment Mockup", description: "Previewing the graphic’s scale and placement on the shirt." },
+  { src: "assets/fashion/sketch-05.png", alt: "Finished printed garment worn by a child", title: "Finished Garment", description: "The final print brought to life on the finished garment." },
 ];
 
 function FashionPage() {
   return (
     <main className="fashion-page">
+      <svg className="category-media-filters" width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+          <filter id="fashion-process-remove-white" colorInterpolationFilters="sRGB">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -5 -5 -5 0 14" result="keyed" />
+            <feComposite in="keyed" in2="SourceGraphic" operator="in" />
+          </filter>
+        </defs>
+      </svg>
       <div className="fashion-stage">
         <section className="fashion-intro" aria-labelledby="fashion-title">
           <div className="fashion-intro-copy">
@@ -387,9 +395,9 @@ function FashionPage() {
             <p>Thoughtful apparel graphics from<br />concept to garment</p>
             <a href="#home">&lt;&lt; Go back for more procjects</a>
             <div className="fashion-intro-values" aria-label="Fashion services">
-              <span><img src={assetUrl("assets/fashion/intro-garment-icon.png")} alt="" />Garment<br />Design</span>
-              <span><img src={assetUrl("assets/fashion/intro-print-icon.png")} alt="" />Print &amp;<br />Graphics</span>
-              <span><img src={assetUrl("assets/fashion/intro-production-icon.png")} alt="" />Production<br />Ready</span>
+              <span><img src={assetUrl("assets/fashion/intro-garment-icon.png")} alt="" /><span>Garment<br />Design</span></span>
+              <span><img src={assetUrl("assets/fashion/intro-print-icon.png")} alt="" /><span>Print &amp;<br />Graphics</span></span>
+              <span><img src={assetUrl("assets/fashion/intro-production-icon.png")} alt="" /><span>Production<br />Ready</span></span>
             </div>
           </div>
           <div className="fashion-intro-art" aria-hidden="true">
@@ -432,12 +440,10 @@ function FashionPage() {
           <h2 id="fashion-selected-title">Selected Garments Projects</h2>
           <p>A selection of apparel collections developed from concept to production</p>
           <div className="fashion-selected-grid">
-            {fashionSelectedGarments.map((garment, index) => (
+            {fashionSelectedGarments.map((garment) => (
               <figure className="fashion-selected-card" key={garment.src} tabIndex={0}>
-                <img src={assetUrl(garment.src)} alt={garment.alt} />
-                <span className="fashion-hover-placeholder" aria-hidden="true">
-                  Alternate image<br />placeholder {String(index + 1).padStart(2, "0")}
-                </span>
+                <img className="fashion-selected-original" src={assetUrl(garment.src)} alt={garment.alt} />
+                <img className="fashion-selected-hover" src={assetUrl(garment.hoverSrc)} alt="" aria-hidden="true" loading="lazy" decoding="async" />
               </figure>
             ))}
           </div>
@@ -450,8 +456,8 @@ function FashionPage() {
               <article key={step.src}>
                 <div className="fashion-sketch-image"><img src={assetUrl(step.src)} alt={step.alt} /></div>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <h3>Collection consistency</h3>
-                <p>A unified visual language across all four sets.</p>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
               </article>
             ))}
           </div>
@@ -483,11 +489,10 @@ function FashionPage() {
           </div>
         </section>
 
-        <section className="fashion-details-title">
+        <section className="fashion-details-title" aria-label="Flower embroidery animation">
           <video autoPlay muted loop playsInline preload="metadata" aria-hidden="true">
             <source src={assetUrl("assets/fashion/design-details.mp4")} type="video/mp4" />
           </video>
-          <h2>Design Is In The Details</h2>
         </section>
 
         <section className="fashion-tags" aria-labelledby="fashion-tags-title">

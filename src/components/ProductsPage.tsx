@@ -132,7 +132,7 @@ export function ProductsPage() {
 
       <section className="products-showroom" aria-labelledby="products-showroom-title" data-node-id="1:93">
         <div className="products-showroom-background">
-          <img data-products-parallax="0.025" src={productAsset("4a90f.png")} alt="Minene showroom signage with apparel graphics and sculptural white props" />
+          <img data-products-parallax="0.025" src={productAsset("showroom26bg.png")} alt="Minene showroom signage with apparel graphics and sculptural white props" />
         </div>
         <div className="products-showroom-intro">
           <div className="products-showroom-heading" data-reveal data-products-parallax="0.015">
@@ -158,9 +158,8 @@ export function ProductsPage() {
         </div>
       </section>
 
-      <section className="products-horse" aria-labelledby="products-horse-title" data-node-id="1:83" data-name="horse">
-        {horseVideoSrc && <video className="products-horse-video" src={horseVideoSrc} autoPlay muted loop playsInline preload="metadata" data-products-parallax="0.035" />}
-        <h2 id="products-horse-title" data-reveal data-products-parallax="0.04">Design Is In The Details</h2>
+      <section className="products-horse" aria-label="Showroom horse animation" data-node-id="1:83" data-name="horse">
+        <video className="products-horse-video" src={horseVideoSrc} aria-label="Animated horse and ballerina showroom display" autoPlay muted loop playsInline preload="metadata" />
       </section>
 
       <section className="products-display" aria-labelledby="products-display-title" data-node-id="1:52">
@@ -179,7 +178,7 @@ export function ProductsPage() {
 
       <section className="products-standout" aria-labelledby="products-standout-title" data-node-id="1:43">
         <div className="products-container products-standout-layout">
-          <div className="products-standout-photos" data-reveal data-products-parallax="0.035">
+          <div className="products-standout-photos">
             <Photo photo={{ id: "1:51", file: "cbb64.png", alt: "Branded lucky coupon rolls displayed in the showroom", crop: { width: 256.6, height: 206.8, left: -26.52, top: -103.39 } }} />
             <div className="products-standout-middle">
               <Photo photo={{ id: "1:50", file: "cbb64.png", alt: "Close-up of the showroom display detail", crop: { width: 303.39, height: 244.51, left: -182.93, top: -144.67 } }} />
@@ -187,7 +186,7 @@ export function ProductsPage() {
             </div>
             <Photo photo={{ id: "1:49", file: "cbb64.png", alt: "Pull for tickets sign on the luck coupon machine", crop: { width: 239.44, height: 192.97, left: -11.78, top: -14.17 } }} />
           </div>
-          <div className="products-standout-copy" data-reveal data-products-parallax="0.02">
+          <div className="products-standout-copy">
             <h2 id="products-standout-title">Made To Stand Out</h2>
             <p>A playful display piece that brings the brand to life and creates a strong focal point within the showroom.</p>
           </div>
