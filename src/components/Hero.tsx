@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { assetUrl, siteConfig } from "../data/siteContent";
 import { createHeroFrames } from "../lib/heroFrames";
+import { createHeroSurface } from "../lib/heroSurface";
 import heroMedia from "../data/heroMedia.json";
 
 // Both phases share the source frame at precisely 00:02.
@@ -46,6 +47,12 @@ export function Hero() {
     const video = videoRef.current;
     const copy = copyRef.current!;
     const context = canvas.getContext("2d", { alpha: false });
+    const swatch = document.createElement("canvas").getContext("2d")!;
+    swatch.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+    swatch.fillRect(0, 0, 1, 1);
+    const [r, g, b] = swatch.getImageData(0, 0, 1, 1).data;
+    const surface = createHeroSurface([r, g, b]);
+    const poster = section.querySelector<HTMLImageElement>(".hero-poster")!;
     const header = document.querySelector<HTMLElement>(".site-header");
     let disposed = false;
     let raf = 0;
@@ -76,7 +83,19 @@ export function Hero() {
     const frames = reducedMotion || !context ? null : createHeroFrames(
       (index) => `${mediaRoot}/frames/frame_${String(index + 1).padStart(3, "0")}.webp`,
       FRAME_COUNT, mobile, requestTick,
+      (bitmap, index) => surface.grade(bitmap, index / max, mobile),
     );
+    const paintPoster = async () => {
+      if (!reducedMotion || !context || disposed || !poster.naturalWidth) return;
+      try {
+        const bitmap = await surface.grade(await createImageBitmap(poster), 1, mobile);
+        if (!disposed) {
+          context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+          section.classList.add("is-surface-ready");
+        }
+        bitmap.close();
+      } catch { /* The original poster remains available. */ }
+    };
 
     const rawProgress = () => (window.scrollY - sectionTop + headerHeight) / distance;
     const resumeIntro = () => {
@@ -204,6 +223,7 @@ export function Hero() {
     }
 
     section.dataset.phase = reducedMotion ? "static" : "intro";
+    section.classList.remove("is-surface-ready");
     section.dataset.frame = reducedMotion ? String(FRAME_COUNT) : "0";
     section.dataset.time = reducedMotion ? String(heroMedia.lastFrameSeconds) : "0";
     section.classList.toggle("is-sketch", !reducedMotion);
@@ -226,6 +246,10 @@ export function Hero() {
     section.parentElement?.addEventListener("animationend", measure);
     document.addEventListener("visibilitychange", onVisibility);
     measure();
+    if (reducedMotion) {
+      poster.addEventListener("load", paintPoster);
+      if (poster.complete) void paintPoster();
+    }
     // Resume an existing scroll-controlled hero at the current page position.
     current = target;
     if (video && !reducedMotion && !introDone) {
@@ -261,6 +285,8 @@ export function Hero() {
         video.pause();
       }
       frames?.dispose();
+      surface.dispose();
+      poster.removeEventListener("load", paintPoster);
       resize.disconnect();
       visibility.disconnect();
       window.removeEventListener("scroll", readScroll);

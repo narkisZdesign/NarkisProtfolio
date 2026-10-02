@@ -271,7 +271,7 @@ main {
   position: relative;
   height: calc(200svh + var(--hero-stage-height));
   isolation: isolate;
-  background: #fff;
+  background: var(--bg);
   overflow-anchor: none;
 }
 
@@ -304,6 +304,7 @@ main {
 .hero-scroll-frame { z-index: 1; opacity: 0; }
 .hero-intro-video { z-index: 2; }
 .hero-section[data-phase="scroll"] .hero-scroll-frame { opacity: 1; }
+.hero-section.is-surface-ready[data-phase="static"] .hero-scroll-frame { opacity: 1; }
 .hero-section[data-phase="scroll"] .hero-intro-video { visibility: hidden; }
 .hero-section[data-phase="fallback"] .hero-intro-video { visibility: hidden; }
 
@@ -316,12 +317,12 @@ main {
   height: clamp(16px, 2.8svh, 28px);
   opacity: var(--hero-fade-opacity);
   background: linear-gradient(to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, .08) 25%,
-    rgba(255, 255, 255, .28) 50%,
-    rgba(255, 255, 255, .6) 75%,
-    rgba(255, 255, 255, .9) 92%,
-    #fff 100%);
+    color-mix(in srgb, var(--bg) 0%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 8%, transparent) 25%,
+    color-mix(in srgb, var(--bg) 28%, transparent) 50%,
+    color-mix(in srgb, var(--bg) 60%, transparent) 75%,
+    color-mix(in srgb, var(--bg) 90%, transparent) 92%,
+    var(--bg) 100%);
   pointer-events: none;
 }
 
@@ -395,7 +396,7 @@ main {
   z-index: 3;
   margin-top: 0;
   padding: 2rem 0 clamp(4.8rem, 7vw, 7.5rem);
-  background: #fff;
+  background: var(--bg);
 }
 
 .categories-section::before {
@@ -404,7 +405,7 @@ main {
   inset: 0;
   left: 50%;
   width: 100vw;
-  background: #fff;
+  background: var(--bg);
   transform: translateX(-50%);
   content: "";
 }
@@ -2253,6 +2254,7 @@ main {
 .home-page {
   overflow: clip;
   overflow-anchor: none;
+  background: var(--bg);
 }
 
 .packaging-page {

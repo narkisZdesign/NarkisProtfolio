@@ -22,9 +22,13 @@ over the remaining hero distance. During the latter part of the desktop scroll,
 the centered framing eases into the 1180 × 478 crop from the supplied reference.
 The video scales uniformly, and the copy stays anchored to the composition.
 The pinning distance remains two viewport heights while the frame changes size.
-A narrow 16–28 px white edge fade appears only over the final 6% of progress,
-below the character's feet. Reduced-motion visitors retain a static final poster
-with the final framing.
+A narrow 16–28 px edge fade appears only over the final 6% of progress,
+below the character's feet. The hero edge, work section and About background
+share `--bg`. During the last 18% of the animation, an off-thread surface grade
+lifts the neutral gray seating toward that background color while retaining
+the character and local foot shadows. Graded frames use the existing bounded
+cache; no pixel processing runs in the scroll handler. Reduced-motion visitors
+receive the same surface treatment on the static final poster.
 
 ## Previous extended hero
 

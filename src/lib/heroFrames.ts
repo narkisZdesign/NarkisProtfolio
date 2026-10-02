@@ -1,5 +1,8 @@
 /** Bounded decoded-frame cache. Native scrolling never waits for this loader. */
-export function createHeroFrames(url: (frame: number) => string, count: number, mobile: boolean, onReady: () => void) {
+export function createHeroFrames(
+  url: (frame: number) => string, count: number, mobile: boolean, onReady: () => void,
+  process?: (bitmap: ImageBitmap, index: number) => Promise<ImageBitmap>,
+) {
   const capacity = mobile ? 20 : 24;
   const decoded = new Map<number, ImageBitmap>();
   const compressed = new Map<number, Blob>();
@@ -37,7 +40,8 @@ export function createHeroFrames(url: (frame: number) => string, count: number, 
             blob = await response.blob();
             compressed.set(index, blob);
           }
-          const bitmap = await createImageBitmap(blob);
+          let bitmap = await createImageBitmap(blob);
+          if (process && !disposed && wanted.includes(index)) bitmap = await process(bitmap, index);
           if (disposed || !wanted.includes(index)) bitmap.close();
           else decoded.set(index, bitmap);
           trim();
