@@ -57,7 +57,8 @@ function Photo({ photo, hoverFile, className = "", eager = false }: {
 }) {
   return (
     <figure className={`products-photo ${hoverFile ? "products-photo-swap" : ""} ${className}`}
-      data-node-id={photo.id} tabIndex={className.includes("gallery") || hoverFile ? 0 : undefined}>
+      data-node-id={photo.id} style={photo.aspectRatio ? { aspectRatio: photo.aspectRatio } : undefined}
+      tabIndex={className.includes("gallery") || hoverFile ? 0 : undefined}>
       <div className="products-photo-zoom">
         <img className={photo.crop ? "products-photo-cropped" : "products-photo-original"}
           src={productAsset(photo.file)} alt={photo.alt} style={cropStyle(photo.crop)}
@@ -151,7 +152,7 @@ export function ProductsPage() {
               {showroomPhotos.slice(0, 4).map((photo, index) => <Photo photo={photo} hoverFile={showroomHoverFiles[index]} className="products-gallery-photo" key={photo.id} />)}
             </div>
             <div className="products-gallery-row products-gallery-row-bottom">
-              {showroomPhotos.slice(4).map((photo, index) => <Photo photo={photo} hoverFile={showroomHoverFiles[index + 4]} className="products-gallery-photo" key={photo.id} />)}
+              {showroomPhotos.slice(4).map((photo) => <Photo photo={photo} className="products-gallery-photo" key={photo.id} />)}
             </div>
           </div>
         </div>

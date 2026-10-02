@@ -41,11 +41,16 @@ export function CategoryCard({ category, index }: { category: Category; index: n
               muted
               loop
               playsInline
-              preload="none"
+              preload={category.visual.object ? "none" : "auto"}
               onPlay={() => { if (!hovered.current) stop(); }}
             />
           ) : (
-            <img src={category.visual.object} loading="lazy" decoding="async" alt="" />
+            <img
+              src={category.visual.object}
+              loading="lazy"
+              decoding="async"
+              alt=""
+            />
           )}
         </span>
         <strong>{category.title}</strong>

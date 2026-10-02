@@ -7,7 +7,7 @@ export const productAsset = (filename: string) => assetUrl(`assets/products/${fi
 export const horseVideoSrc: string | undefined = undefined;
 
 export type ProductCrop = { width: number; height: number; left: number; top: number; flip?: boolean };
-export type ProductPhoto = { id: string; file: string; alt: string; crop?: ProductCrop };
+export type ProductPhoto = { id: string; file: string; alt: string; crop?: ProductCrop; aspectRatio?: string };
 export type ProductFeature = { title: string; description: string; icon: string; crop?: ProductCrop };
 
 export const showroomFeatures: ProductFeature[] = [
@@ -32,18 +32,19 @@ export const mirrorFeatures: ProductFeature[] = [
   { title: "Production\nFiles", description: "Preparing accurate artwork and dimensions for printing and application.", icon: "44e8e.png", crop: { width: 117, height: 117, left: -8.5, top: -7.19 } },
 ];
 
+// Individual photo tiles exported at 2x from Figma to preserve its crops and rotation.
 export const showroomPhotos: ProductPhoto[] = [
-  { id: "1:89", file: "cc626.png", alt: "White sculptural crown prop in the Minene showroom" },
-  { id: "1:90", file: "dce53.png", alt: "Scalloped round cream showroom sign", crop: { width: 140.53, height: 189.88, left: -20.1, top: -89.94 } },
-  { id: "1:91", file: "f48ba.png", alt: "Custom printed ribbon and decorative showroom props" },
-  { id: "1:86", file: "e3db2.png", alt: "White banana sculpture with a branded tag" },
-  { id: "1:87", file: "8adea.png", alt: "Close-up of a decorative wand and ribbon" },
-  { id: "1:88", file: "9a089.png", alt: "White crown-shaped display surrounded by decorative elements" },
-  { id: "1:92", file: "d70f2.png", alt: "Branded Minene signs arranged on showroom shelves" },
+  { id: "1:89", file: "showroom-gallery/crown.png", alt: "White sculptural crown prop in the Minene showroom", aspectRatio: "279 / 309" },
+  { id: "1:90", file: "showroom-gallery/cookie.png", alt: "Scalloped round cream showroom sign", aspectRatio: "278 / 309" },
+  { id: "1:91", file: "showroom-gallery/ribbon.png", alt: "Custom printed ribbon and decorative showroom props", aspectRatio: "278 / 308" },
+  { id: "1:86", file: "showroom-gallery/tag.png", alt: "White banana sculpture with a branded tag", aspectRatio: "257 / 309" },
+  { id: "1:87", file: "showroom-gallery/wands.png", alt: "Close-up of a decorative wand and ribbon", aspectRatio: "412 / 274" },
+  { id: "1:88", file: "showroom-gallery/pedestal.png", alt: "White crown-shaped display surrounded by decorative elements", aspectRatio: "315 / 274" },
+  { id: "1:92", file: "showroom-gallery/shelves.png", alt: "Branded Minene signs arranged on showroom shelves", aspectRatio: "374 / 275" },
 ];
 
-// Temporary alternate images; replace these with the final hover photographs.
-export const showroomHoverFiles = ["e3db2.png", "f48ba.png", "cc626.png", "8adea.png", "9a089.png", "d70f2.png", "cc626.png"];
+// Match each top-row photo to its production drawing by the source photo number.
+export const showroomHoverFiles = ["TALZ0161-hover.jpg", "TALZ0079-hover.jpg", "TALZ0146-hover.jpg", "TALZ0148-hover.jpg"];
 
 export const mirrorPhotos: ProductPhoto[] = [
   { id: "1:7", file: "b5dbb.png", alt: "Minene launch mirror beside the shop entrance", crop: { width: 450.85, height: 442.61, left: -238.92, top: -81.99 } },

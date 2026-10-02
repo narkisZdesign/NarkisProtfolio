@@ -38,7 +38,7 @@ export type Category = {
   href: string;
   visual: {
     background: string;
-    object: string;
+    object?: string;
     video?: string;
     objectAlt: string;
   };
@@ -47,7 +47,7 @@ export type Category = {
 export type Service = {
   title: string;
   description: string;
-  icon: IconType;
+  icon: string;
 };
 
 export type ProcessStep = {
@@ -123,7 +123,6 @@ export const navItems: NavItem[] = [
   { label: "About", href: "#about" },
   { label: "Work", href: "#work" },
   { label: "Services", href: "#services" },
-  { label: "Process", href: "#process" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -143,7 +142,7 @@ export const categories: Category[] = [
     href: "#fashion",
     visual: {
       background: assetUrl("assets/categories/fashion-sketch.webp"),
-      object: assetUrl("assets/categories/fashion.webp"),
+      video: assetUrl("assets/categories/fashion-hover.mp4"),
       objectAlt: "Sage green shirt",
     },
   },
@@ -258,32 +257,32 @@ export const services: Service[] = [
   {
     title: "Brand Identity",
     description: "Logos, systems & visual language",
-    icon: TbPalette,
+    icon: "assets/services/Brand.jpg",
   },
   {
     title: "Print & Packaging",
     description: "Brochures, labels & packaging",
-    icon: TbPackage,
+    icon: "assets/services/Packaging.jpg",
   },
   {
     title: "Digital Design",
     description: "Web, UI & digital experiences",
-    icon: TbLayoutDashboard,
+    icon: "assets/services/Digital.png",
   },
   {
     title: "Illustration",
     description: "Custom artwork & details",
-    icon: FaPenNib,
+    icon: "assets/services/Illustration.png",
   },
   {
     title: "Video & Motion",
     description: "Editing, motion & storytelling",
-    icon: FaVideo,
+    icon: "assets/services/Video.png",
   },
   {
     title: "Fashion Design",
     description: "Tech packs, patterns & collections",
-    icon: FaShirt,
+    icon: "assets/services/Fashion.png",
   },
 ];
 

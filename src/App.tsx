@@ -8,10 +8,8 @@ import {
   assetUrl,
   categories,
   navItems,
-  processSteps,
   services,
   siteConfig,
-  tools,
   values,
 } from "./data/siteContent";
 
@@ -225,9 +223,12 @@ function ComparisonSlider({
 const packagingSections = [
   { id: "packaging-overview", label: "Overview" },
   { id: "packaging-approach", label: "Approach" },
-  { id: "packaging-in-store", label: "In store" },
   { id: "packaging-dieline", label: "Dieline" },
+  { id: "packaging-in-store", label: "In store" },
   { id: "packaging-bath", label: "Bath collection" },
+  { id: "packaging-gift-boxes", label: "Gift boxes" },
+  { id: "packaging-process", label: "Process" },
+  { id: "packaging-more-tags", label: "Tags" },
 ];
 
 const packagingStructuredData = {
@@ -239,7 +240,7 @@ const packagingStructuredData = {
     name: "Narkis Zur",
     jobTitle: "Graphic Designer",
   },
-  about: "A packaging design system for developmental toys and bath toy collections.",
+  about: "Packaging design systems for developmental toys, bath toy sets, and gift box collections.",
   genre: ["Packaging Design", "Graphic Design", "Brand Systems"],
   url: "https://narkiszdesign.github.io/NarkisProtfolio/#packaging",
   image:
@@ -286,6 +287,54 @@ function PackagingProjectNav() {
         </div>
       </div>
     </nav>
+  );
+}
+
+const packagingTagImages = [
+  { file: "tag-crop-1.png", alt: "Packaged baby gift set" },
+  { file: "tag-crop-2.png", alt: "Gift jar and tag" },
+  { file: "tag-crop-3.png", alt: "Rectangular gift tag" },
+  { file: "tag-crop-4.png", alt: "Flower shaped gift tag" },
+  { file: "tag-crop-5.png", alt: "Gift basket and tag" },
+  { file: "tag-crop-6.png", alt: "Knitted baby textiles and tag" },
+  { file: "tag-crop-0.png", alt: "Baby toes and gift tag" },
+];
+
+const packagingCarouselSlots = [
+  { left: 0, width: 105 }, { left: 120, width: 137 },
+  { left: 272, width: 170 }, { left: 457, width: 207 },
+  { left: 679, width: 169 }, { left: 863, width: 136 },
+  { left: 1014, width: 104 },
+];
+
+function PackagingTagCarousel() {
+  const [center, setCenter] = useState(3);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (paused || reducedMotion.matches) return;
+    const timer = window.setInterval(() => setCenter((value) => (value + 1) % packagingTagImages.length), 4000);
+    return () => window.clearInterval(timer);
+  }, [paused]);
+
+  return (
+    <div className="packaging-tag-carousel" data-node-id="12:413" data-name="Group 43"
+      aria-label="Gift box tag designs" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
+      {packagingTagImages.map((item, index) => {
+        const slot = packagingCarouselSlots[(index - center + 3 + packagingTagImages.length) % packagingTagImages.length];
+        return <figure className="packaging-tag-card" key={item.file}
+          style={{
+            left: `${slot.left / 1118 * 100}%`,
+            width: `${slot.width / 1118 * 100}%`,
+            transition: index === (center + 3) % packagingTagImages.length ? "none" : undefined,
+          }}>
+          <img src={assetUrl(`assets/packaging/figma-update/${item.file}`)} alt={item.alt}
+            loading="lazy" decoding="async" data-lightbox tabIndex={0} role="button" aria-label={`View ${item.alt} larger`} />
+        </figure>;
+      })}
+    </div>
   );
 }
 
@@ -461,6 +510,38 @@ function FashionPage() {
 
 function PackagingPage() {
   const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
+  const packagingRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const page = packagingRef.current;
+    if (!page) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const layers = Array.from(page.querySelectorAll<HTMLElement>("[data-packaging-parallax]"));
+    let frame = 0;
+    const paint = () => {
+      frame = 0;
+      for (const layer of layers) {
+        const section = layer.closest("section");
+        if (!section) continue;
+        const bounds = section.getBoundingClientRect();
+        if (bounds.bottom < -60 || bounds.top > window.innerHeight + 60) continue;
+        const distance = window.innerHeight / 2 - (bounds.top + bounds.height / 2);
+        const shift = reducedMotion.matches ? 0 : clamp(distance * Number(layer.dataset.packagingParallax) * 2, -38, 38);
+        layer.style.setProperty("--packaging-parallax-y", `${shift.toFixed(2)}px`);
+      }
+    };
+    const queue = () => { if (!frame) frame = window.requestAnimationFrame(paint); };
+    queue();
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    reducedMotion.addEventListener("change", queue);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", queue);
+      window.removeEventListener("resize", queue);
+      reducedMotion.removeEventListener("change", queue);
+    };
+  }, []);
 
   useEffect(() => {
     if (!lightboxImage) return;
@@ -493,6 +574,7 @@ function PackagingPage() {
   return (
     <main
       className="packaging-page page-enter"
+      ref={packagingRef}
       onClick={(event) => openLightbox(event.target)}
       onKeyDown={handleProjectKeyDown}
     >
@@ -502,9 +584,9 @@ function PackagingPage() {
       />
       <PackagingProjectNav />
       <section className="packaging-intro" aria-labelledby="packaging-title">
-        <div className="packaging-intro-copy" data-reveal>
-          <h1 id="packaging-title">Packaging</h1>
-          <p>From dielines to final mockups –<br />Packaging built with purpose</p>
+        <div className="packaging-intro-copy" data-reveal data-packaging-parallax="0.018">
+          <h1 id="packaging-title">PACKAGING</h1>
+          <p>Thoughtful packaging design from<br />concept to shelf</p>
           <a className="packaging-back" href="#work">&larr; Back to projects</a>
           <div className="packaging-values" aria-label="Packaging services">
             <span><img src={assetUrl("assets/packaging/Artboard 1.jpg")} alt="" aria-hidden="true" />Creative<br />Solutions</span>
@@ -520,78 +602,110 @@ function PackagingPage() {
 
       <article className="packaging-case">
         <section className="case-overview packaging-container" id="packaging-overview">
-          <div className="case-pair" data-reveal>
+          <div className="case-pair" data-reveal data-packaging-parallax="0.032">
             <ComparisonSlider
-              before={assetUrl("assets/packaging/Pink_Store_Development_matt.png")}
-              after={assetUrl("assets/packaging/Blue_Store_Development_matt.png")}
+              before={assetUrl("assets/packaging/figma-update/b89ed.png")}
+              after={assetUrl("assets/packaging/figma-update/2157e.png")}
               beforeAlt="Desert Love activity gym packaging"
               afterAlt="Ocean Secrets activity gym packaging"
             />
           </div>
-          <div className="case-copy" data-reveal>
-            <h2>Packaging design<br />for a developmental<br />toys line</h2>
-            <h3>Desert Love &amp; Ocean Secrets<br />by Minene</h3>
-            <p>A packaging design system for a developmental toys line, featuring a variety of products including baby activity gyms, soft activity books, hanging toys, activity cubes, and more.<br />The project focused on creating a consistent and recognizable visual language across the collection, while adapting each package to the product&apos;s size, structure, retail placement, and key developmental benefits.</p>
-            <dl className="project-facts" aria-label="Project details">
-              <div><dt>Client</dt><dd>Minene</dd></div>
-              <div><dt>Role</dt><dd>Packaging design</dd></div>
-              <div><dt>Scope</dt><dd>Visual system &amp; production</dd></div>
-            </dl>
+          <div className="case-copy" data-reveal data-packaging-parallax="0.014">
+            <h2>Packaging Design<br />For A Developmental<br />Toys Line</h2>
+            <h3>Desert Love &amp; Ocean Secrets<br />By Minene</h3>
+            <span className="packaging-copy-rule" aria-hidden="true" />
+            <p>A packaging design system for a developmental toys line, featuring a variety of products.<br />The project focused on creating a consistent and recognizable visual language across the collection, while adapting each package to the product&apos;s size, structure, retail placement, and key developmental benefits.</p>
           </div>
         </section>
 
-        <section className="design-approach packaging-container" id="packaging-approach" aria-labelledby="design-approach-title" data-reveal>
-          <h2 id="design-approach-title">The design approach</h2>
-          <div className="approach-grid">
-            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 7.jpg")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Inspired by nature</h3><p>Desert &amp; Ocean worlds brought to life in soft, neutral tones.</p></article>
-            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 8.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Development first</h3><p>Packaging communicates the product&apos;s benefits and activities clearly.</p></article>
-            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 9.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Gentle &amp; modern</h3><p>A calm, minimal visual language that feels warm and trustworthy.</p></article>
-            <article className="approach-item"><img src={assetUrl("assets/packaging/Artboard 10.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Shelf impact</h3><p>Clean structure, large window &amp; clear hierarchy for retail presence.</p></article>
+        <section className="design-approach packaging-container" id="packaging-approach" aria-label="Packaging design approach" data-reveal>
+          <div className="approach-grid" data-packaging-parallax="0.022">
+            <article className="approach-item"><img src={assetUrl("assets/packaging/figma-update/39e26.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Inspired By Nature</h3><p>Desert &amp; Ocean worlds brought to life in soft, neutral tones.</p></article>
+            <article className="approach-item"><img src={assetUrl("assets/packaging/figma-update/6dc84.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Development First</h3><p>Packaging communicates the product&apos;s benefits and activities clearly.</p></article>
+            <article className="approach-item"><img src={assetUrl("assets/packaging/figma-update/83333.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Gentle &amp; Modern</h3><p>A calm, minimal visual language that feels warm and trustworthy.</p></article>
+            <article className="approach-item"><img src={assetUrl("assets/packaging/figma-update/b14ef.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Shelf Impact</h3><p>Clean structure, large window &amp; clear hierarchy for retail presence.</p></article>
           </div>
+        </section>
+
+        <section className="dieline-panel packaging-container" id="packaging-dieline" data-reveal data-packaging-parallax="0.02">
+          <div><h2>Dieline And Layout</h2><p>Complete packaging dieline and print layout.</p><img src={assetUrl("assets/packaging/figma-update/1cc23.png")} loading="lazy" decoding="async" alt="Packaging dieline and print layout" data-lightbox tabIndex={0} role="button" aria-label="View packaging dieline and print layout larger" /></div>
+          <div><h2>Step-By-Step</h2><p>Packing &amp; Assembly Instructions</p><img src={assetUrl("assets/packaging/figma-update/008f7.png")} loading="lazy" decoding="async" alt="Packaging assembly instructions" data-lightbox tabIndex={0} role="button" aria-label="View packaging assembly instructions larger" /></div>
         </section>
 
         <section className="collection-row packaging-container" id="packaging-in-store">
-          <div className="collection-images" data-reveal>
-            <img src={assetUrl("assets/packaging/Developmental_cube_toy.png")} loading="lazy" decoding="async" alt="Developmental activity cube packaging" data-lightbox tabIndex={0} role="button" aria-label="View developmental activity cube packaging larger" />
-            <img src={assetUrl("assets/packaging/Hanging_Development_matt.png")} loading="lazy" decoding="async" alt="Hanging developmental toy packaging" data-lightbox tabIndex={0} role="button" aria-label="View hanging developmental toy packaging larger" />
-            <img src={assetUrl("assets/packaging/Developmental_book_toy.png")} loading="lazy" decoding="async" alt="Developmental activity book packaging" data-lightbox tabIndex={0} role="button" aria-label="View developmental activity book packaging larger" />
+          <div className="collection-images" data-reveal data-packaging-parallax="0.03">
+            <img src={assetUrl("assets/packaging/figma-update/13325.png")} loading="lazy" decoding="async" alt="Developmental activity cube packaging" data-lightbox tabIndex={0} role="button" aria-label="View developmental activity cube packaging larger" />
+            <img src={assetUrl("assets/packaging/figma-update/a9cb1.png")} loading="lazy" decoding="async" alt="Hanging developmental toy packaging" data-lightbox tabIndex={0} role="button" aria-label="View hanging developmental toy packaging larger" />
+            <img src={assetUrl("assets/packaging/figma-update/62811.png")} loading="lazy" decoding="async" alt="Developmental activity book packaging" data-lightbox tabIndex={0} role="button" aria-label="View developmental activity book packaging larger" />
           </div>
-          <div className="collection-note" data-reveal><h2>In store</h2><p>Consistent line look that stands out on the shelf and communicates quality, trust and care.</p></div>
-        </section>
-
-        <section className="dieline-panel packaging-container" id="packaging-dieline" data-reveal>
-          <div><h2>Dieline &amp; layout</h2><p>Complete packaging dieline and print layout.</p><img src={assetUrl("assets/packaging/פריסה והוראות-01.jpg")} loading="lazy" decoding="async" alt="Packaging dieline and print layout" data-lightbox tabIndex={0} role="button" aria-label="View packaging dieline and print layout larger" /></div>
-          <div><h2>Step-by-step</h2><p>Packing &amp; Assembly Instructions</p><img src={assetUrl("assets/packaging/פריסה והוראות-02.jpg")} loading="lazy" decoding="async" alt="Packaging assembly instructions" data-lightbox tabIndex={0} role="button" aria-label="View packaging assembly instructions larger" /></div>
+          <div className="collection-note" data-reveal data-packaging-parallax="0.016"><h2>In Stores</h2><p>Consistent line look that stands out on the shelf and communicates quality, trust and care.</p></div>
         </section>
 
         <section className="bath-case packaging-container" id="packaging-bath">
-          <div className="bath-copy" data-reveal>
-            <h2>Packaging design for bath<br />toys sets collection</h2>
+          <div className="bath-copy" data-reveal data-packaging-parallax="0.016">
+            <h2>Packaging Design For Bath<br />Toys Sets Collection</h2>
             <h3>4-Piece Bath Toy Line<br />By Minene</h3>
+            <span className="packaging-copy-rule" aria-hidden="true" />
             <p>The visual language combines illustration, product-part photography, and themed atmosphere to create a playful yet clear packaging system. Each pack explains the set content and assembly visually, while maintaining the brand&apos;s soft color palette and adding an engaging, playful twist.</p>
           </div>
-          <div className="bath-back" data-reveal><img className="bath-back-icon" src={assetUrl("assets/packaging/back of pack icon .png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Back of Pack</h3><p>Parent-friendly information explains the product benefits, how the pieces work together, and how to play with the set in a clear and visually engaging way.</p><img className="bath-back-image" src={assetUrl("assets/packaging/ChatGPT Image Jul 1, 2026, 12_14_29 PM.png")} loading="lazy" decoding="async" alt="Packaging back panel" data-lightbox tabIndex={0} role="button" aria-label="View packaging back panel larger" /></div>
-          <img className="bath-main-image" src={assetUrl("assets/packaging/4 packaging bath toys sets.png")} loading="lazy" decoding="async" alt="Bath toy packaging collection" data-reveal data-lightbox tabIndex={0} role="button" aria-label="View bath toy packaging collection larger" />
+          <div className="bath-back" data-reveal data-packaging-parallax="0.028"><img className="bath-back-icon" src={assetUrl("assets/packaging/figma-update/98fb8.png")} loading="lazy" decoding="async" alt="" aria-hidden="true" /><h3>Back Of Pack</h3><p>Parent-friendly information explains the product benefits, how the pieces work together, and how to play with the set in a clear and visually engaging way.</p><img className="bath-back-image" src={assetUrl("assets/packaging/figma-update/38ce9.png")} loading="lazy" decoding="async" alt="Packaging back panel" data-lightbox tabIndex={0} role="button" aria-label="View packaging back panel larger" /></div>
+          <img className="bath-main-image" src={assetUrl("assets/packaging/figma-update/4f438.png")} loading="lazy" decoding="async" alt="Bath toy packaging collection" data-reveal data-packaging-parallax="0.03" data-lightbox tabIndex={0} role="button" aria-label="View bath toy packaging collection larger" />
         </section>
 
         <section className="bath-footer packaging-container">
-          <div><h2>System highlights</h2><div className="highlights"><article><h3>Shelf-friendly<br />hierarchy</h3><p>Clear structure for strong retail visibility.</p></article><article><h3>Easy product<br />understanding</h3><p>Clear visuals help communicate the content.</p></article><article><h3>Collection<br />consistency</h3><p>A unified visual language across all four sets.</p></article></div></div>
-          <div className="how-it-works"><h2>How it works</h2><div><span><img src={assetUrl("assets/packaging/otter1.png")} loading="lazy" decoding="async" alt="Unbox" /><b>Unbox</b></span><span><img src={assetUrl("assets/packaging/otter2.png")} loading="lazy" decoding="async" alt="Connect" /><b>Connect</b></span><span><img src={assetUrl("assets/packaging/otter3.png")} loading="lazy" decoding="async" alt="Play" /><b>Play</b></span></div></div>
+          <div data-reveal data-packaging-parallax="0.008"><h2>System Highlights</h2><div className="highlights"><article><h3>Shelf-Friendly<br />Hierarchy</h3><p>Clear structure for strong retail visibility.</p></article><article><h3>Easy Product<br />Understanding</h3><p>Clear visuals help communicate the content.</p></article><article><h3>Collection<br />Consistency</h3><p>A unified visual language across all four sets.</p></article></div></div>
+          <div className="how-it-works" data-reveal data-packaging-parallax="0.008"><h2>How It Works</h2><div><span><img src={assetUrl("assets/packaging/figma-update/bddd8.png")} loading="lazy" decoding="async" alt="Unbox" /><b>Unbox</b></span><span><img src={assetUrl("assets/packaging/figma-update/73b18.png")} loading="lazy" decoding="async" alt="Connect" /><b>Connect</b></span><span><img src={assetUrl("assets/packaging/figma-update/b2a76.png")} loading="lazy" decoding="async" alt="Play" /><b>Play</b></span></div></div>
         </section>
-        <footer className="project-end" id="packaging-end" data-reveal>
-          <p>Have a packaging project in mind?</p>
-          <h2>Let&apos;s create something thoughtful.</h2>
-          <ul className="project-contact-details" aria-label="Collaboration details">
-            <li>Packaging, brand systems &amp; print-ready production</li>
-            <li>Remote collaboration welcome</li>
-            <li>Personal reply within 2 business days</li>
-          </ul>
-          <div>
-            <a className="project-end-secondary" href="#work">Explore more work</a>
-            <a className="project-end-secondary" href={`mailto:${siteConfig.email}`}>Email Narkis</a>
-            <a className="peach-button" href={siteConfig.contactUrl} target="_blank" rel="noreferrer">Start a project <ArrowIcon /></a>
+
+        <section className="gift-box-section" id="packaging-gift-boxes" aria-labelledby="gift-box-title"
+          style={{ backgroundImage: `url(${assetUrl("assets/packaging/figma-update/giftsets-latest.png")})` }}>
+          <div className="packaging-container gift-box-content">
+            <div className="gift-box-copy" data-reveal data-packaging-parallax="0.016">
+              <h2 id="gift-box-title">Packaging Design For<br />Gift Box Collections</h2>
+              <h3>Gift Box System<br />By Minene</h3>
+              <img className="gift-box-rule" src={assetUrl("assets/packaging/figma-update/ab6c9.png")} alt="" />
+              <p>This project focused on developing a flexible packaging system for curated baby gift boxes. The work included planning box sizes, defining product combinations, designing the visual language, writing packaging messages and creating clear packing instructions.</p>
+            </div>
+            <div className="gift-box-features" data-reveal data-packaging-parallax="0.026">
+              {[
+                { icon: "c5bf6.png", title: "Concept & Direction", text: "Building the visual concept and overall language for the gift box collection." },
+                { icon: "f2a83.png", title: "Box Design", text: "Designing a flexible packaging system across different box sizes and formats." },
+                { icon: "5404c.png", title: "Packaging Details", text: "Creating matching greeting cards, stickers, wrapping paper and branded inserts." },
+                { icon: "b14ef.png", title: "Packing Instructions", text: "Preparing clear visual guides for arranging, assembling and presenting each gift set." },
+              ].map((item) => <article key={item.title}>
+                <img src={assetUrl(`assets/packaging/figma-update/${item.icon}`)} alt="" aria-hidden="true" loading="lazy" />
+                <h3>{item.title}</h3><p>{item.text}</p>
+              </article>)}
+            </div>
           </div>
-        </footer>
+        </section>
+
+        <section className="packaging-process packaging-container" id="packaging-process" aria-labelledby="packaging-process-title">
+          <div className="packaging-process-heading" data-reveal data-packaging-parallax="0.014">
+            <h2 id="packaging-process-title">Process &amp; Presentation</h2>
+            <p>from planning and packing guides to ready-made gift sets</p>
+          </div>
+          <div className="packaging-process-gallery" data-reveal data-packaging-parallax="0.028">
+            {[
+              { file: "dd7d2.png", alt: "Gift box packaging plans and layout" },
+              { file: "db96a.png", alt: "Printed packing guide held in hand" },
+              { file: "87ff8.png", alt: "Assembled gift boxes with tags" },
+              { file: "a0eaa.png", alt: "Gift box collection ready for presentation" },
+            ].map((item) => <img key={item.file} src={assetUrl(`assets/packaging/figma-update/${item.file}`)}
+              alt={item.alt} loading="lazy" decoding="async" data-lightbox tabIndex={0} role="button"
+              aria-label={`View ${item.alt} larger`} />)}
+          </div>
+        </section>
+
+        <section className="packaging-more-tags" id="packaging-more-tags" aria-labelledby="packaging-more-tags-title">
+          <div className="packaging-container packaging-more-tags-inner">
+            <div className="packaging-more-tags-heading" data-reveal data-packaging-parallax="0.014">
+              <h2 id="packaging-more-tags-title">More Tag Design</h2>
+              <p>Gift Box System</p>
+            </div>
+            <div data-reveal data-packaging-parallax="0.03"><PackagingTagCarousel /></div>
+          </div>
+        </section>
       </article>
       {lightboxImage ? (
         <div
@@ -699,62 +813,12 @@ function Services() {
       </div>
       <div className="service-grid">
         {services.map((service) => {
-          const Icon = service.icon;
           return (
             <article className="service-item" key={service.title}>
-              <Icon aria-hidden="true" />
+              <img src={assetUrl(service.icon)} alt="" aria-hidden="true" loading="lazy" decoding="async" />
               <h3>{service.title}</h3>
               <p>{service.description}</p>
             </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function Process() {
-  return (
-    <section className="panel-section process-panel" id="process" aria-labelledby="process-title" data-reveal>
-      <div className="process-intro">
-        <span>My process</span>
-        <h2 id="process-title">A thoughtful process</h2>
-        <p>from idea to impact.</p>
-      </div>
-      <div className="process-steps">
-        {processSteps.map((step, index) => {
-          const Icon = step.icon;
-          return (
-            <article className="process-step" key={step.number}>
-              <Icon aria-hidden="true" />
-              <strong>
-                {step.number}. {step.title}
-              </strong>
-              <p>{step.description}</p>
-              {index < processSteps.length - 1 ? (
-                <span className="step-arrow" aria-hidden="true">
-                  <ArrowIcon />
-                </span>
-              ) : null}
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function Tools() {
-  return (
-    <section className="panel-section tools-panel" aria-labelledby="tools-title" data-reveal>
-      <h2 id="tools-title">Tools I use</h2>
-      <div className="tool-list">
-        {tools.map((tool) => {
-          const Icon = tool.icon;
-          return (
-            <span className={`tool-icon ${tool.className}`} key={tool.label} title={tool.label}>
-              <Icon aria-label={tool.label} />
-            </span>
           );
         })}
       </div>
@@ -900,8 +964,6 @@ export function App() {
           <Categories />
           <About />
           <Services />
-          <Process />
-          <Tools />
           <ValueStrip />
         </main>
       )}

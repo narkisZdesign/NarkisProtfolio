@@ -37,7 +37,7 @@ function AcademyProject() {
         <div className="branding-gallery-row">{academyPhotos.slice(4).map(photo => <AcademyPhoto key={photo.id} photo={photo} />)}</div>
       </div>
     </div>
-    <div className="branding-details" data-node-id="2:52"><img src={brandingAsset("1d4da.png")} alt="Black Makbilim branded jacket" loading="lazy" decoding="async" /><h2>Design is in the details</h2></div>
+    <div className="branding-details" data-node-id="2:52"><video aria-label="Makbilim Time-Travel Academy brand video" autoPlay muted loop playsInline preload="metadata"><source src={brandingAsset("makbilimvideo.mp4")} type="video/mp4" /></video></div>
   </section>;
 }
 
