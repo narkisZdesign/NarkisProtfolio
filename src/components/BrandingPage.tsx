@@ -1,25 +1,7 @@
 import { academyFeatures, academyPhotos, brandingAsset } from "../data/brandingContent";
 import { BrandingFeatures, ReefScroll } from "./ReefScroll";
+import { CategoryHero } from "./CategoryHero";
 import "./branding.css";
-
-function BrandingHero() {
-  return <section className="branding-hero" aria-labelledby="branding-title">
-    <div className="branding-container branding-hero-layout">
-      <div className="branding-hero-copy">
-        <h1 id="branding-title">BRANDING</h1>
-        <p>A memorable brand from concept to every touchpoint</p>
-        <a className="branding-back" href="#work">&lt;&lt; Go back for more projects</a>
-        <div className="branding-hero-tags">
-          {[["b14ef.png", "Research & Strategy"], ["952d4.png", "Visual Language"], ["75318.png", "Consistency"]].map(([icon, label]) => <span key={label}><img src={brandingAsset(icon)} alt="" />{label}</span>)}
-        </div>
-      </div>
-      <div className="branding-hero-art" aria-hidden="true">
-        <img className="branding-flowers" src={brandingAsset("7f15a.png")} alt="" data-node-id="2:37" />
-        <img className="branding-seal" src={brandingAsset("564ac.png")} alt="" data-node-id="2:90" />
-      </div>
-    </div>
-  </section>;
-}
 
 function AcademyProject() {
   return <section className="branding-academy" id="branding-makbilim" aria-labelledby="academy-title" tabIndex={-1}>
@@ -48,5 +30,5 @@ function AcademyPhoto({ photo }: { photo: typeof academyPhotos[number] }) {
 }
 
 export function BrandingPage() {
-  return <main className="branding-page"><BrandingHero /><ReefScroll /><AcademyProject /></main>;
+  return <main className="branding-page"><CategoryHero category="branding" /><ReefScroll /><AcademyProject /></main>;
 }

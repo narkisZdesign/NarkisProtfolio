@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { CategoryCard } from "./components/CategoryCard";
 import { Hero } from "./components/Hero";
+import { CategoryHero } from "./components/CategoryHero";
+import { SiteLayout } from "./components/SiteLayout";
 import { ProductsPage } from "./components/ProductsPage";
 import { BrandingPage } from "./components/BrandingPage";
+import { TbArrowRight } from "react-icons/tb";
 import {
   arrowIcon as ArrowIcon,
   assetUrl,
   categories,
-  navItems,
   services,
   siteConfig,
-  values,
 } from "./data/siteContent";
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
@@ -48,96 +49,6 @@ function useHashRoute() {
   }, []);
 
   return route;
-}
-
-function Header({ isPackagingPage }: { isPackagingPage: boolean }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState(isPackagingPage ? "work" : "home");
-  const headerRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (isPackagingPage) {
-      setActiveSection("work");
-      return;
-    }
-
-    const sections = navItems
-      .map((item) => document.getElementById(item.href.slice(1)))
-      .filter((section): section is HTMLElement => Boolean(section));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActiveSection(visible.target.id);
-      },
-      { rootMargin: "-22% 0px -62% 0px", threshold: [0, 0.15, 0.4] },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [isPackagingPage]);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!headerRef.current?.contains(event.target as Node)) setMenuOpen(false);
-    };
-
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("pointerdown", handlePointerDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("pointerdown", handlePointerDown);
-    };
-  }, [menuOpen]);
-
-  return (
-    <header className="site-header" aria-label="Primary navigation" ref={headerRef}>
-      <a className="brand-mark" href="#home" aria-label={`${siteConfig.name} home`}>
-        {siteConfig.initials}
-      </a>
-
-      <button
-        className={menuOpen ? "menu-toggle is-open" : "menu-toggle"}
-        type="button"
-        aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-        aria-expanded={menuOpen}
-        aria-controls="site-nav"
-        onClick={() => setMenuOpen((open) => !open)}
-      >
-        <span />
-        <span />
-        <span />
-      </button>
-
-      <nav id="site-nav" className={menuOpen ? "nav-list is-open" : "nav-list"}>
-        {navItems.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className={activeSection === item.href.slice(1) ? "is-active" : undefined}
-            aria-current={activeSection === item.href.slice(1) ? "location" : undefined}
-            onClick={() => setMenuOpen(false)}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-
-      <a className="header-cta" href={siteConfig.contactUrl} target="_blank" rel="noreferrer">
-        {siteConfig.ctaLabel}
-      </a>
-    </header>
-  );
 }
 
 function ComparisonSlider({
@@ -220,17 +131,6 @@ function ComparisonSlider({
   );
 }
 
-const packagingSections = [
-  { id: "packaging-overview", label: "Overview" },
-  { id: "packaging-approach", label: "Approach" },
-  { id: "packaging-dieline", label: "Dieline" },
-  { id: "packaging-in-store", label: "In store" },
-  { id: "packaging-bath", label: "Bath collection" },
-  { id: "packaging-gift-boxes", label: "Gift boxes" },
-  { id: "packaging-process", label: "Process" },
-  { id: "packaging-more-tags", label: "Tags" },
-];
-
 const packagingStructuredData = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
@@ -246,49 +146,6 @@ const packagingStructuredData = {
   image:
     "https://narkiszdesign.github.io/NarkisProtfolio/assets/packaging/Blue_Store_Development_matt.png",
 };
-
-function PackagingProjectNav() {
-  const [activeSection, setActiveSection] = useState(packagingSections[0].id);
-
-  useEffect(() => {
-    const sections = packagingSections
-      .map(({ id }) => document.getElementById(id))
-      .filter((section): section is HTMLElement => Boolean(section));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActiveSection(visible.target.id);
-      },
-      { rootMargin: "-18% 0px -68% 0px", threshold: [0, 0.2, 0.5] },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <nav className="project-nav" aria-label="Packaging project sections">
-      <div className="project-nav-inner">
-        <a className="project-nav-back" href="#work">&larr; Projects</a>
-        <div className="project-nav-links">
-          {packagingSections.map((section) => (
-            <a
-              key={section.id}
-              href={`#${section.id}`}
-              className={activeSection === section.id ? "is-active" : undefined}
-              aria-current={activeSection === section.id ? "location" : undefined}
-              onClick={() => setActiveSection(section.id)}
-            >
-              {section.label}
-            </a>
-          ))}
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 const packagingTagImages = [
   { file: "tag-crop-1.png", alt: "Packaged baby gift set" },
@@ -389,22 +246,7 @@ function FashionPage() {
         </defs>
       </svg>
       <div className="fashion-stage">
-        <section className="fashion-intro" aria-labelledby="fashion-title">
-          <div className="fashion-intro-copy">
-            <h1 id="fashion-title">Fashion</h1>
-            <p>Thoughtful apparel graphics from<br />concept to garment</p>
-            <a href="#home">&lt;&lt; Go back for more procjects</a>
-            <div className="fashion-intro-values" aria-label="Fashion services">
-              <span><img src={assetUrl("assets/fashion/intro-garment-icon.png")} alt="" /><span>Garment<br />Design</span></span>
-              <span><img src={assetUrl("assets/fashion/intro-print-icon.png")} alt="" /><span>Print &amp;<br />Graphics</span></span>
-              <span><img src={assetUrl("assets/fashion/intro-production-icon.png")} alt="" /><span>Production<br />Ready</span></span>
-            </div>
-          </div>
-          <div className="fashion-intro-art" aria-hidden="true">
-            <img className="fashion-intro-sketch" src={assetUrl("assets/fashion/intro-sketch.png")} alt="" />
-            <img className="fashion-intro-shirt" src={assetUrl("assets/fashion/intro-shirt.png")} alt="" />
-          </div>
-        </section>
+        <CategoryHero category="fashion" />
 
         <section className="fashion-overview" aria-labelledby="fashion-overview-title">
           <video
@@ -587,23 +429,7 @@ function PackagingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(packagingStructuredData) }}
       />
-      <PackagingProjectNav />
-      <section className="packaging-intro" aria-labelledby="packaging-title">
-        <div className="packaging-intro-copy" data-reveal data-packaging-parallax="0.018">
-          <h1 id="packaging-title">PACKAGING</h1>
-          <p>Thoughtful packaging design from<br />concept to shelf</p>
-          <a className="packaging-back" href="#work">&larr; Back to projects</a>
-          <div className="packaging-values" aria-label="Packaging services">
-            <span><img src={assetUrl("assets/packaging/Artboard 1.jpg")} alt="" aria-hidden="true" />Creative<br />Solutions</span>
-            <span><img src={assetUrl("assets/packaging/Artboard 2.jpg")} alt="" aria-hidden="true" />Sustainable<br />Thinking</span>
-            <span><img src={assetUrl("assets/packaging/Artboard 3.jpg")} alt="" aria-hidden="true" />Brand-Focused<br />Design</span>
-          </div>
-        </div>
-        <div className="packaging-intro-art" data-reveal>
-          <img className="intro-dieline" src={assetUrl("assets/packaging/box_icon_layout.png")} alt="Packaging dieline" />
-          <img className="intro-box" src={assetUrl("assets/packaging/box_icon_cutout.png")} alt="Open blue packaging box" />
-        </div>
-      </section>
+      <CategoryHero category="packaging" />
 
       <article className="packaging-case">
         <section className="case-overview packaging-container" id="packaging-overview">
@@ -793,7 +619,7 @@ function About() {
         <p>I help brands and businesses communicate with clarity, beauty, and purpose.</p>
         <a className="peach-button" href="#work">
           {siteConfig.workLabel}
-          <ArrowIcon />
+          <TbArrowRight aria-hidden="true" />
         </a>
       </div>
 
@@ -820,7 +646,10 @@ function Services() {
         {services.map((service) => {
           return (
             <article className="service-item" key={service.title}>
-              <img src={assetUrl(service.icon)} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+              <span className="service-icon" aria-hidden="true">
+                <img src={assetUrl(service.icon)} alt="" loading="lazy" decoding="async"
+                  style={{ width: `${service.iconCrop.width}%`, height: `${service.iconCrop.height}%`, left: `${service.iconCrop.left}%`, top: `${service.iconCrop.top}%` }} />
+              </span>
               <h3>{service.title}</h3>
               <p>{service.description}</p>
             </article>
@@ -828,29 +657,6 @@ function Services() {
         })}
       </div>
     </section>
-  );
-}
-
-function ValueStrip() {
-  return (
-    <footer className="value-strip" id="contact">
-      <div className="value-grid">
-        {values.map((value) => {
-          const Icon = value.icon;
-          return (
-            <article className="value-item" key={value.title}>
-              <span>
-                <Icon aria-hidden="true" />
-              </span>
-              <div>
-                <h2>{value.title}</h2>
-                <p>{value.description}</p>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </footer>
   );
 }
 
@@ -953,8 +759,7 @@ export function App() {
   }, [isBrandingPage, isFashionPage, isPackagingPage, isProductsPage, route]);
 
   return (
-    <>
-      <Header isPackagingPage={isPackagingPage || isFashionPage || isProductsPage || isBrandingPage} />
+    <SiteLayout route={route} isProjectPage={isPackagingPage || isFashionPage || isProductsPage || isBrandingPage}>
       {isPackagingPage ? (
         <PackagingPage />
       ) : isFashionPage ? (
@@ -969,9 +774,8 @@ export function App() {
           <Categories />
           <About />
           <Services />
-          <ValueStrip />
         </main>
       )}
-    </>
+    </SiteLayout>
   );
 }

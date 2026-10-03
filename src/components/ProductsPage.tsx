@@ -4,6 +4,7 @@ import {
   showroomFeatures, showroomHoverFiles, showroomPhotos,
   type ProductCrop, type ProductFeature, type ProductPhoto,
 } from "../data/productsContent";
+import { CategoryHero } from "./CategoryHero";
 import "./products.css";
 
 function useProductsParallax(root: RefObject<HTMLElement | null>) {
@@ -107,28 +108,7 @@ export function ProductsPage() {
 
   return (
     <main className="products-page" ref={pageRef}>
-      <section className="products-hero" aria-labelledby="products-title" data-node-id="1:120">
-        <div className="products-container products-hero-layout">
-          <div className="products-hero-copy" data-reveal data-products-parallax="0.025">
-            <h1 id="products-title">BRAND<br />EXPERIENCES</h1>
-            <p>Props &amp; displays from<br className="products-desktop-break" /> concept to setup</p>
-            <a href="#work" className="products-back">&lt;&lt; Go back for more procjects</a>
-            <div className="products-hero-values">
-              <span><img src={productAsset("b14ef.png")} alt="" />Concept To<br />Space</span>
-              <span><img src={productAsset("952d4.png")} alt="" />Print &amp;<br />Production</span>
-              <span><img src={productAsset("75318.png")} alt="" />Branded<br />Impact</span>
-            </div>
-          </div>
-          <div className="products-hero-art" data-reveal data-products-parallax="0.07" aria-hidden="true">
-            <div className="products-hero-sketch">
-              <img src={productAsset("788ba.png")} alt="" />
-            </div>
-            <div className="products-hero-object">
-              <img src={productAsset("hero-stand-transparent.png")} alt="" />
-            </div>
-          </div>
-        </div>
-      </section>
+      <CategoryHero category="products" />
 
       <section className="products-showroom" aria-labelledby="products-showroom-title" data-node-id="1:93">
         <div className="products-showroom-background">

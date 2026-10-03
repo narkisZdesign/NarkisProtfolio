@@ -48,6 +48,7 @@ export type Service = {
   title: string;
   description: string;
   icon: string;
+  iconCrop: { width: number; height: number; left: number; top: number };
 };
 
 export type ProcessStep = {
@@ -107,23 +108,24 @@ export const assetUrl = (path: string) =>
 
 export const siteConfig = {
   name: "Narkis Zur",
-  initials: "NZ",
-  email: "hello@narkiszur.com",
+  logo: "assets/brand/narkis-logo-white.png",
+  email: "narkis300@gmail.com",
+  phone: "050-4225510",
+  phoneUrl: "tel:+972504225510",
   heroTitle: "Narkis Zur",
   heroSubtitle: "Visual storyteller & problem solver.",
   heroBody: "I turn ideas into meaningful designs that connect.",
   aboutHeadline: "Creative mind.\nOrganized process.\nMeaningful results.",
-  ctaLabel: "Contact",
+  ctaLabel: "WhatsApp",
   contactUrl: "https://wa.me/972504225510",
   workLabel: "View my work",
 };
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
   { label: "Work", href: "#work" },
+  { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
-  { label: "Contact", href: "#contact" },
 ];
 
 export const categories: Category[] = [
@@ -258,31 +260,37 @@ export const services: Service[] = [
     title: "Brand Identity",
     description: "Logos, systems & visual language",
     icon: "assets/services/Brand.jpg",
+    iconCrop: { width: 111.8, height: 116.1, left: -5.63, top: -5.9 },
   },
   {
     title: "Print & Packaging",
     description: "Brochures, labels & packaging",
     icon: "assets/services/Packaging.jpg",
+    iconCrop: { width: 113.94, height: 118.32, left: -6.97, top: -11.08 },
   },
   {
     title: "Digital Design",
     description: "Web, UI & digital experiences",
     icon: "assets/services/Digital.png",
+    iconCrop: { width: 104.61, height: 108.63, left: -2.56, top: -3.06 },
   },
   {
     title: "Illustration",
-    description: "Custom artwork & details",
+    description: "Custom artwork\n& details",
     icon: "assets/services/Illustration.png",
+    iconCrop: { width: 130.57, height: 135.59, left: -12.77, top: -13.72 },
   },
   {
     title: "Video & Motion",
     description: "Editing, motion & storytelling",
     icon: "assets/services/Video.png",
+    iconCrop: { width: 136.23, height: 131.33, left: -19.73, top: -15.47 },
   },
   {
     title: "Fashion Design",
     description: "Tech packs, patterns & collections",
     icon: "assets/services/Fashion.png",
+    iconCrop: { width: 107.11, height: 111.23, left: -3.82, top: -2.27 },
   },
 ];
 

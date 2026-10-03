@@ -1,0 +1,95 @@
+.category-hero {
+  --category-ink: #355e61;
+  --category-bg: #fcf9f7;
+  --category-back-color: #dac3ae;
+  position: relative;
+  z-index: 3;
+  background: var(--category-bg);
+  color: var(--category-ink);
+  font-family: Inter, Arial, sans-serif;
+}
+
+.category-hero--packaging { border-bottom: 1px solid rgb(65 113 108 / 16%); box-shadow: 0 12px 34px -7px rgb(65 113 108 / 16%); }
+
+.category-hero-layout {
+  width: min(1126px, calc(100% - 48px));
+  min-height: 435px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 484fr) minmax(0, 640fr);
+  align-items: center;
+}
+
+.category-hero-copy { position: relative; z-index: 1; min-width: 0; padding: 45px 0 52px; }
+.category-hero .category-hero-title { margin: 0; font-size: clamp(40px, 5vw, 72px); font-weight: 600; line-height: 1.38; }
+.category-hero .category-hero-description { max-width: 476px; margin: 5px 0 0; font-size: 26px; font-weight: 600; line-height: 1.28; white-space: pre-line; }
+.category-hero-back { display: inline-block; margin-top: 30px; color: var(--category-back-color); font-size: 20px; font-weight: 400; line-height: normal; }
+.category-hero-back:hover { text-decoration: underline; }
+.category-hero a:focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }
+.category-hero-services { display: flex; align-items: center; gap: 16px; margin-top: 38px; }
+.category-hero-services > span { display: flex; align-items: center; min-width: 0; max-width: 174px; gap: 10px; font-size: 16px; font-weight: 600; line-height: 1.2; }
+.category-hero-services img { flex-shrink: 0; width: 46px; height: 49px; object-fit: cover; border-radius: 8px; mix-blend-mode: multiply; box-shadow: -4px 5px 9px 3px rgb(0 0 0 / 4%); }
+.category-hero-service-label.has-line-breaks > span { display: block; white-space: nowrap; }
+
+.category-hero-art { position: relative; min-width: 0; height: 435px; pointer-events: none; }
+.category-hero-art-pair { position: relative; width: 100%; height: 100%; isolation: isolate; background: var(--category-bg); }
+.category-hero-art img { position: absolute; object-fit: contain; }
+.category-hero-sketch { z-index: 1; mix-blend-mode: multiply; }
+.category-hero-object { z-index: 2; mix-blend-mode: normal; }
+
+/* Align visible artwork, compensating for the padding in the original image files. */
+.category-hero-art:not(.category-hero-art--products) { --art-height: 360px; --art-top: 46px; }
+.category-hero-art:not(.category-hero-art--products) img { width: auto; max-width: none; }
+.category-hero-art--packaging .category-hero-sketch { height: var(--art-height); top: var(--art-top); left: 90px; filter: brightness(1.06) contrast(1.08); clip-path: inset(2px 0 0); }
+.category-hero-art--packaging .category-hero-object { height: calc(var(--art-height) * 1448 / 1274); top: calc(var(--art-top) - var(--art-height) * 86 / 1274); right: 15px; }
+/* Match the cloth height (source rows 44–387), excluding the shadow below it. */
+.category-hero-art--fashion { --shirt-sketch-height: calc(var(--art-height) * 344 / 369); }
+.category-hero-art--fashion .category-hero-sketch { height: calc(var(--shirt-sketch-height) * 359 / 289); top: calc(var(--art-top) - var(--shirt-sketch-height) * 26 / 289); left: 44px; }
+.category-hero-art--fashion .category-hero-object { height: calc(var(--art-height) * 435 / 369); top: calc(var(--art-top) - var(--art-height) * 44 / 369); right: 15px; }
+.category-hero-art--branding .category-hero-sketch { height: calc(var(--art-height) * 1254 / 1098); top: calc(var(--art-top) - var(--art-height) * 68 / 1098); left: 44px; transform: scaleX(-1); }
+.category-hero-art--branding .category-hero-object { height: calc(var(--art-height) * 1716 / 1447); top: calc(var(--art-top) - var(--art-height) * 195 / 1447); right: 15px; }
+
+/* Products retains the existing dimensions and distance between the two layers. */
+.category-hero-art--products .category-hero-art-pair { position: absolute; width: calc(100% - 15px); left: 50%; transform: translateX(-50%); }
+.category-hero-object { width: 312px; height: 404px; top: 0; right: 15px; }
+.category-hero-art--products .category-hero-sketch { width: 440px; height: 400px; top: 20px; left: 0; opacity: .38; transform: scaleX(-1); mask-image: radial-gradient(ellipse at center, black 48%, transparent 76%); }
+.category-hero-art--products .category-hero-object { width: 330px; height: 350px; top: 24px; right: 0; }
+
+@media (max-width: 1000px) {
+  .category-hero-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .category-hero .category-hero-description { font-size: 22px; }
+  .category-hero-services { gap: 10px; }
+  .category-hero-services > span { font-size: 12px; gap: 5px; }
+  .category-hero-services img { width: 34px; height: 36px; }
+  .category-hero-art:not(.category-hero-art--products) { --art-height: 260px; --art-top: 80px; }
+  .category-hero-art:not(.category-hero-art--products) .category-hero-sketch { left: 0; }
+  .category-hero-art:not(.category-hero-art--products) .category-hero-object { right: 0; }
+  .category-hero-art--products .category-hero-art-pair { width: 100%; }
+  .category-hero-art--products .category-hero-sketch { width: 65%; height: auto; left: 0; top: 70px; }
+  .category-hero-art--products .category-hero-object { width: 58%; height: auto; top: 35px; right: 0; }
+}
+
+@media (max-width: 760px) {
+  .category-hero-layout { width: calc(100% - 40px); display: flex; flex-direction: column-reverse; min-height: 0; }
+  .category-hero-art { height: 220px; width: min(400px, 100%); }
+  .category-hero-art:not(.category-hero-art--products) { --art-height: 190px; --art-top: 15px; }
+  .category-hero-art:not(.category-hero-art--products) .category-hero-sketch { left: 15%; }
+  .category-hero-art:not(.category-hero-art--products) .category-hero-object { right: 6%; }
+  .category-hero-art--products .category-hero-art-pair { left: 50.5%; }
+  .category-hero-art--products .category-hero-sketch { width: 67%; height: 210px; top: 12px; left: 5%; }
+  .category-hero-art--products .category-hero-object { width: 48%; height: 200px; top: 10px; right: 6%; }
+  .category-hero-copy { width: 100%; padding: 5px 0 36px; }
+  .category-hero .category-hero-title { font-size: 42px; }
+  .category-hero .category-hero-description { font-size: 20px; max-width: 350px; }
+  .category-hero-back { font-size: 16px; margin-top: 20px; }
+  .category-hero-services { margin-top: 24px; justify-content: space-between; }
+  .category-hero-services > span { max-width: 125px; }
+}
+
+@media (max-width: 420px) {
+  .category-hero-services { align-items: flex-start; gap: 12px; }
+  .category-hero-services > span { flex: 1; flex-direction: column; align-items: flex-start; gap: 8px; max-width: none; }
+}
+
+/* Clip the original opaque canvas to the wax outline, preserving highlights. */
+.category-hero-art--branding .category-hero-object { clip-path: polygon(51.50% 11.18%, 56.25% 11.37%, 60.25% 12.33%, 63.00% 13.49%, 68.25% 16.96%, 71.50% 17.92%, 75.50% 18.30%, 78.75% 19.08%, 82.75% 20.81%, 85.50% 22.93%, 87.25% 25.05%, 88.25% 27.17%, 89.25% 32.56%, 90.25% 35.07%, 96.00% 41.81%, 97.25% 45.28%, 97.25% 48.36%, 96.75% 50.29%, 95.25% 52.99%, 90.75% 57.23%, 89.00% 60.12%, 87.50% 67.24%, 83.75% 75.14%, 83.50% 78.23%, 84.25% 80.92%, 84.25% 83.24%, 83.50% 84.78%, 81.00% 86.13%, 78.75% 86.13%, 77.00% 85.36%, 75.50% 83.24%, 75.50% 81.70%, 76.25% 79.58%, 76.25% 76.30%, 75.75% 74.95%, 75.00% 73.99%, 73.25% 73.03%, 69.75% 73.03%, 66.75% 74.57%, 62.50% 79.19%, 60.50% 80.15%, 56.25% 80.92%, 54.75% 81.89%, 53.50% 84.20%, 53.50% 87.67%, 54.00% 89.21%, 53.75% 92.29%, 51.75% 94.80%, 49.25% 95.57%, 46.00% 95.57%, 44.25% 94.80%, 42.50% 93.06%, 42.00% 91.71%, 42.00% 89.40%, 42.75% 87.09%, 42.50% 81.89%, 40.25% 78.42%, 37.50% 76.30%, 35.50% 75.34%, 31.50% 74.95%, 29.00% 76.69%, 28.25% 79.00%, 28.25% 82.47%, 29.00% 86.13%, 27.75% 88.25%, 26.25% 89.02%, 24.50% 89.21%, 23.00% 88.82%, 21.50% 87.67%, 20.75% 86.13%, 21.75% 81.50%, 21.25% 76.30%, 19.50% 73.03%, 15.75% 68.40%, 13.00% 59.15%, 10.75% 56.26%, 8.00% 53.76%, 6.50% 51.45%, 5.50% 48.36%, 5.50% 45.86%, 6.50% 42.77%, 8.00% 40.46%, 11.75% 36.61%, 13.00% 34.49%, 15.25% 26.59%, 17.25% 23.70%, 20.75% 20.81%, 26.25% 18.69%, 32.50% 18.11%, 36.00% 17.34%, 38.75% 16.18%, 43.50% 13.10%, 47.50% 11.75%); }
