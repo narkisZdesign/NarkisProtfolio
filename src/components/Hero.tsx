@@ -46,7 +46,7 @@ export function Hero() {
     const canvas = canvasRef.current!;
     const video = videoRef.current;
     const copy = copyRef.current!;
-    const context = canvas.getContext("2d", { alpha: false });
+    const context = canvas.getContext("2d", { alpha: false, desynchronized: true });
     const swatch = document.createElement("canvas").getContext("2d")!;
     swatch.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
     swatch.fillRect(0, 0, 1, 1);
@@ -60,7 +60,7 @@ export function Hero() {
     let current = 0;
     let target = 0;
     let lastPainted = -1;
-    let direction = 1;
+    let playbackDirection = 1;
     let needsPaint = true;
     let visible = true;
     let sectionTop = 0;
@@ -73,8 +73,7 @@ export function Hero() {
     let fullStageWidth = 0;
     let fullStageHeight = 0;
     let presentationProgress = reducedMotion ? 1 : 0;
-    let presentationZoom = 1;
-    let presentationShift = 0;
+    const presentationStyles = new Map<string, string>();
     const max = FRAME_COUNT - 1;
 
     const requestTick = () => {
@@ -127,52 +126,39 @@ export function Hero() {
       const next = introDone
         ? clamp((rawProgress() - scrollStartRef.current) / Math.max(1 / distance, 1 - scrollStartRef.current)) * max
         : 0;
-      direction = next >= target ? 1 : -1;
       target = next;
       requestTick();
     };
 
-    const positionCopy = () => {
-      if (mobile) {
-        copy.style.removeProperty("left");
-        copy.style.removeProperty("top");
-        copy.style.removeProperty("width");
-        return;
-      }
-      const bounds = stage.getBoundingClientRect();
-      const cover = Math.max(bounds.width / heroMedia.wideWidth, bounds.height / heroMedia.wideHeight);
-      const framedScale = cover * presentationZoom;
-      const left = (bounds.width - heroMedia.wideWidth * framedScale) / 2;
-      const top = (bounds.height - heroMedia.wideHeight * framedScale) / 2 + presentationShift;
-      const copyLeft = left + heroMedia.wideWidth * 0.645 * framedScale;
-      copy.style.left = `${copyLeft}px`;
-      copy.style.top = `${top + heroMedia.wideHeight * 0.69 * framedScale}px`;
-      copy.style.width = `${Math.max(1, Math.min(400 * cover, (bounds.width - copyLeft - 24) / presentationZoom))}px`;
+    const setPresentationStyle = (name: string, value: string) => {
+      if (presentationStyles.get(name) === value) return;
+      presentationStyles.set(name, value);
+      section.style.setProperty(name, value);
     };
-
-    const present = (progress: number) => {
+    const present = (progress: number, force = false) => {
+      if (!force && presentationProgress === progress) return;
       presentationProgress = progress;
       const framing = mobile ? 0 : smoothstep(clamp((progress - 0.55) / 0.45));
       const finalWidth = Math.min(fullStageWidth, fullStageHeight * FINAL_ASPECT);
       const width = fullStageWidth + (finalWidth - fullStageWidth) * framing;
       const height = fullStageHeight + (finalWidth / FINAL_ASPECT - fullStageHeight) * framing;
-      presentationZoom = 1 + (FINAL_ZOOM - 1) * framing;
-      presentationShift = -FINAL_CROP.verticalOffset * width / FINAL_CROP.width * framing;
-      section.style.setProperty("--hero-stage-width", `${width.toFixed(2)}px`);
-      section.style.setProperty("--hero-stage-height", `${height.toFixed(2)}px`);
-      section.style.setProperty("--hero-zoom", String(presentationZoom));
-      section.style.setProperty("--hero-shift-y", `${presentationShift.toFixed(2)}px`);
-      section.style.setProperty("--hero-fade-opacity", String(smoothstep(clamp((progress - 0.94) / 0.06))));
+      const zoom = 1 + (FINAL_ZOOM - 1) * framing;
+      const shift = -FINAL_CROP.verticalOffset * width / FINAL_CROP.width * framing;
+      setPresentationStyle("--hero-stage-width", `${width.toFixed(2)}px`);
+      setPresentationStyle("--hero-stage-height", `${height.toFixed(2)}px`);
+      setPresentationStyle("--hero-zoom", String(zoom));
+      setPresentationStyle("--hero-shift-y", `${shift.toFixed(2)}px`);
+      setPresentationStyle("--hero-fade-opacity", String(smoothstep(clamp((progress - 0.94) / 0.06))));
       section.dataset.progress = progress.toFixed(4);
-      positionCopy();
     };
 
     const measure = () => {
       headerHeight = header?.getBoundingClientRect().height ?? 0;
       section.style.setProperty("--hero-header-height", `${headerHeight}px`);
-      sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      const bounds = section.getBoundingClientRect();
+      sectionTop = bounds.top + window.scrollY;
       distance = Math.max(1, section.offsetHeight - stage.offsetHeight);
-      fullStageWidth = section.getBoundingClientRect().width;
+      fullStageWidth = bounds.width;
       fullStageHeight = Math.max(1, (reducedMotion ? window.innerHeight : distance / 2) - headerHeight);
       // Draw the complete source frame once. CSS crops it with a uniform scale,
       // matching the intro video and avoiding canvas reallocations while framing.
@@ -183,7 +169,7 @@ export function Hero() {
         canvas.height = height;
         needsPaint = true;
       }
-      present(presentationProgress);
+      present(presentationProgress, true);
       readScroll();
     };
 
@@ -192,12 +178,14 @@ export function Hero() {
       if (disposed || reducedMotion || !frames || !context) return;
       const dt = lastTime ? Math.min(64, time - lastTime) : 16.67;
       lastTime = time;
+      const previous = current;
+      if (target !== previous) playbackDirection = target > previous ? 1 : -1;
       if (introDone && handoffPainted) current += (target - current) * (1 - Math.exp(-dt / 65));
       if (Math.abs(target - current) < 0.15) current = target;
       const desired = Math.round(current);
-      frames.request(desired, Math.round(target), direction);
+      frames.request(desired, Math.round(target), playbackDirection, Math.abs(current - previous));
       const boundary = frames.get(0);
-      const ready = handoffPainted ? frames.nearest(desired) : boundary ? { index: 0, bitmap: boundary } : null;
+      const ready = handoffPainted ? frames.nearest(desired, lastPainted, playbackDirection) : boundary ? { index: 0, bitmap: boundary } : null;
       if (introDone && !ready && frames.hasFailed(desired) && lastPainted < 0) {
         const poster = section.querySelector<HTMLImageElement>(".hero-poster");
         if (poster) poster.src = `${mediaRoot}/final-poster.webp`;
@@ -220,6 +208,7 @@ export function Hero() {
         section.classList.toggle("is-sketch", progress < 0.42);
       }
       if (Math.abs(target - current) > 0.15) requestTick();
+      else lastTime = 0;
     }
 
     section.dataset.phase = reducedMotion ? "static" : "intro";
@@ -229,15 +218,18 @@ export function Hero() {
     section.classList.toggle("is-sketch", !reducedMotion);
     copy.style.opacity = reducedMotion ? "1" : "0";
     const resize = new ResizeObserver(measure);
-    resize.observe(stage);
+    // The stage resizes throughout the final crop. Observing it creates a
+    // layout/measurement loop on every scroll frame; only measure real resizes.
     if (header) resize.observe(header);
     const visibility = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
+      frames?.setActive(visible && !document.hidden);
       if (visible) { lastTime = 0; readScroll(); }
       else { if (raf) cancelAnimationFrame(raf); raf = 0; }
     });
     visibility.observe(section);
     const onVisibility = () => {
+      frames?.setActive(visible && !document.hidden);
       if (document.hidden) { if (raf) cancelAnimationFrame(raf); raf = 0; }
       else { lastTime = 0; readScroll(); }
     };
@@ -252,6 +244,7 @@ export function Hero() {
     }
     // Resume an existing scroll-controlled hero at the current page position.
     current = target;
+    frames?.warm();
     if (video && !reducedMotion && !introDone) {
       // Resize can switch variants during playback; resume the same timestamp.
       video.addEventListener("loadedmetadata", resumeIntro, { once: true });

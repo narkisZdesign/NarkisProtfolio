@@ -30,5 +30,13 @@ function AcademyPhoto({ photo }: { photo: typeof academyPhotos[number] }) {
 }
 
 export function BrandingPage() {
-  return <main className="branding-page"><CategoryHero category="branding" /><ReefScroll /><AcademyProject /></main>;
+  return <main className="branding-page">
+    <svg className="branding-icon-filters" aria-hidden="true" focusable="false" width="0" height="0">
+      <defs><filter id="reef-icon-remove-white" colorInterpolationFilters="sRGB">
+        <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -5 -5 -5 0 14" result="keyed" />
+        <feComposite in="keyed" in2="SourceGraphic" operator="in" />
+      </filter></defs>
+    </svg>
+    <CategoryHero category="branding" /><ReefScroll /><AcademyProject />
+  </main>;
 }

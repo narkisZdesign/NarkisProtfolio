@@ -64,7 +64,11 @@ export function ReefScroll() {
       stageHeight = Math.max(1, window.innerHeight - headerHeight);
       root.style.setProperty("--reef-top", `${headerHeight}px`);
       root.style.setProperty("--reef-height", `${stageHeight}px`);
-      root.style.setProperty("--reef-scale", `${Math.min(window.innerWidth / 1920, stageHeight / 840)}`);
+      const scale = Math.min(window.innerWidth / 1920, stageHeight / 840);
+      root.style.setProperty("--reef-scale", `${scale}`);
+      // Keep the print heading on the dark cave roof, independent of the
+      // vertically centered artwork board and the viewport's aspect ratio.
+      root.style.setProperty("--reef-print-heading-top", `${(24 - (stageHeight - 840 * scale) / 2) / scale}px`);
       overflow = boards.map(board => Math.max(0, board.scrollHeight - stageHeight + 48));
       queue();
     };

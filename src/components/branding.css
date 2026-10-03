@@ -10,6 +10,7 @@
 .branding-page :is(h1, h2, h3, p, figure) { margin: 0; }
 .branding-container { width: min(1126px, calc(100% - 48px)); margin-inline: auto; }
 .branding-page a:focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }
+.branding-icon-filters { position: absolute; pointer-events: none; }
 
 .reef-scroll { --reef-top: 73px; --reef-height: calc(100svh - 73px); position: relative; height: calc(var(--reef-height) * 11); background: #148ebf; }
 .reef-stage { position: absolute; top: 0; left: 0; width: 100%; height: var(--reef-height); overflow: hidden; background: #0a526e; isolation: isolate; }
@@ -20,7 +21,8 @@
 .reef-background img { width: 100%; height: 100%; object-fit: cover; }
 .reef-sea { transform-origin: 50% 62%; transform: translate3d(var(--swim-x, 0%), var(--swim-y, 0%), 0) rotate(var(--swim-roll, 0deg)) scale(var(--sea-zoom, 1)); }
 .reef-near { transform-origin: 50% 59%; opacity: var(--near-opacity, 0); transform: translate3d(var(--swim-x, 0%), var(--swim-y, 0%), 0) rotate(var(--swim-roll, 0deg)) scale(var(--near-zoom, 1)); }
-.reef-inside { transform-origin: 50% 45%; opacity: var(--inside-opacity, 0); transform: translate3d(var(--swim-x, 0%), var(--swim-y, 0%), 0) rotate(var(--swim-roll, 0deg)) scale(var(--inside-zoom, 1)); }
+.reef-inside { transform-origin: 50% 0%; opacity: var(--inside-opacity, 0); transform: translate3d(var(--swim-x, 0%), var(--swim-y, 0%), 0) rotate(var(--swim-roll, 0deg)) scale(var(--inside-zoom, 1)); }
+.reef-inside img { object-position: center top; }
 .reef-near { mask-image: radial-gradient(ellipse at 50% 59%, black var(--near-reveal, 0%), transparent calc(var(--near-reveal, 0%) + 22%)); }
 .reef-inside { mask-image: radial-gradient(ellipse at 50% 51%, black var(--inside-reveal, 0%), transparent calc(var(--inside-reveal, 0%) + 22%)); }
 .reef-return { opacity: var(--return-opacity, 0); }
@@ -41,6 +43,8 @@
 .branding-feature-icon img { width: 100%; height: 100%; object-fit: cover; }
 .branding-feature-icon img + img { position: absolute; inset: 0; }
 .branding-feature-icon.is-cropped img { max-width: none; width: 134.09%; height: 133.83%; position: absolute; left: -17.48%; top: -17.81%; }
+.reef-intro .branding-feature-icon { mix-blend-mode: normal; }
+.reef-intro .branding-feature-icon img { filter: url(#reef-icon-remove-white); }
 .branding-feature h3 { font-family: "Bricolage Grotesque", Inter, sans-serif; font-size: 20px; font-weight: 600; line-height: 1.1; min-height: 24px; margin-bottom: 9px; }
 .branding-feature p { font-size: 14px; font-weight: 400; line-height: 19.4px; }
 .reef-heading { position: absolute; left: 491px; top: 48px; width: 893px; text-align: center; }
@@ -49,7 +53,7 @@
 .reef-digital .reef-heading { top: 40px; }
 .reef-digital .reef-heading > p { width: 1150px; margin-left: -128px; margin-top: 10px; }
 .reef-digital::before { content: ""; position: absolute; top: 0; width: 100%; height: 25%; background: linear-gradient(rgb(255 255 255 / 40%), transparent); }
-.reef-print .reef-heading { top: 40px; color: white; }
+.reef-print .reef-heading { top: var(--reef-print-heading-top, 40px); color: white; text-shadow: 0 1px 3px rgb(0 20 40 / 35%); }
 .reef-art { position: absolute; transform: rotate(var(--art-rotation, 0deg)); }
 .reef-art > img { width: 100%; height: 100%; object-fit: cover; }
 .reef-interface { left: 448.638px; top: 466.792px; width: 481.859px; height: 301.844px; container-type: inline-size; }
@@ -83,7 +87,10 @@
 .branding-gallery-row:last-child > :nth-child(2) { flex: 315; }
 .branding-gallery-row:last-child > :nth-child(3) { flex: 374; }
 .branding-photo { position: relative; min-width: 0; overflow: hidden; border-radius: 14px; }
-.branding-photo > img { width: 100%; height: 100%; object-fit: cover; max-width: none; }
+.branding-photo > img { width: 100%; height: 100%; object-fit: cover; max-width: none; transition: scale 380ms cubic-bezier(.2, .7, .3, 1); }
+@media (hover: hover) and (pointer: fine) {
+  .branding-photo:hover > img { scale: 1.025; }
+}
 .branding-details { aspect-ratio: 1920 / 546; position: relative; overflow: hidden; background: #efe9e5; }
 .branding-details > video { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; }
 
@@ -115,7 +122,7 @@
   .reef-print .reef-board > [data-node-id="1:18"] { aspect-ratio: 1; }
   .reef-print .reef-board > [data-node-id="1:14"] { aspect-ratio: 528 / 201; }
   .reef-digital .reef-heading { padding: 15px 10px; border-radius: 12px; background: rgb(252 249 247 / 85%); }
-  .reef-print .reef-heading { text-shadow: 0 2px 8px #002c45; }
+  .reef-print .reef-heading { padding: 16px 12px; border-radius: 12px; background: rgb(0 28 49 / 82%); text-shadow: none; }
   .branding-academy { padding-top: 48px; }
   .branding-academy-intro { grid-template-columns: 1fr; gap: 20px; }
   .branding-academy-copy { padding-top: 0; }
@@ -130,6 +137,8 @@
 
 /* CSS fallback also applies before the effect runs or if JavaScript is unavailable. */
 @media (prefers-reduced-motion: reduce) {
+  .branding-photo > img { transition: none; }
+  .branding-photo:hover > img { scale: none; }
   .reef-scroll { height: auto; }
   .reef-stage, .reef-scroll[data-fixed="true"] .reef-stage { position: relative; top: 0; height: auto; overflow: visible; visibility: visible; }
   .reef-backgrounds { display: none; }

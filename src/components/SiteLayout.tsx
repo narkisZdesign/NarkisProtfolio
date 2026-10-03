@@ -1,11 +1,40 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { TbBrandWhatsapp, TbMail, TbPhone } from "react-icons/tb";
-import { assetUrl, navItems, siteConfig } from "../data/siteContent";
+import { TbBrandWhatsapp, TbChevronDown, TbMail, TbPhone } from "react-icons/tb";
+import { assetUrl, categories, navItems, siteConfig } from "../data/siteContent";
 
 function Header({ isProjectPage, route }: { isProjectPage: boolean; route: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [workOpen, setWorkOpen] = useState(false);
+  const [mobile, setMobile] = useState(() => window.matchMedia("(max-width: 760px)").matches);
   const [activeSection, setActiveSection] = useState(isProjectPage ? "work" : "home");
   const headerRef = useRef<HTMLElement | null>(null);
+  const workRef = useRef<HTMLDivElement | null>(null);
+  const workToggleRef = useRef<HTMLButtonElement | null>(null);
+
+  const closeNavigation = () => { setMenuOpen(false); setWorkOpen(false); };
+  const focusWorkItem = (last = false) => {
+    setWorkOpen(true);
+    requestAnimationFrame(() => {
+      const links = workRef.current?.querySelectorAll<HTMLAnchorElement>(".work-dropdown a");
+      links?.[last ? links.length - 1 : 0]?.focus();
+    });
+  };
+
+  useEffect(() => { setMenuOpen(false); setWorkOpen(false); }, [route]);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 760px)");
+    const update = () => { setMobile(query.matches); setMenuOpen(false); setWorkOpen(false); };
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (!workOpen) return;
+    const dismiss = (event: PointerEvent) => {
+      if (!workRef.current?.contains(event.target as Node)) setWorkOpen(false);
+    };
+    window.addEventListener("pointerdown", dismiss);
+    return () => window.removeEventListener("pointerdown", dismiss);
+  }, [workOpen]);
 
   useEffect(() => {
     if (isProjectPage) {
@@ -56,7 +85,7 @@ function Header({ isProjectPage, route }: { isProjectPage: boolean; route: strin
 
   return (
     <header className="site-header" aria-label="Primary navigation" ref={headerRef}>
-      <a className="brand-mark" href="#home" aria-label={`${siteConfig.name} home`}>
+      <a className="brand-mark" href="#home" aria-label={`${siteConfig.name} home`} onClick={closeNavigation}>
         <img src={assetUrl(siteConfig.logo)} width="1875" height="839" alt="Narkis" />
       </a>
 
@@ -66,21 +95,49 @@ function Header({ isProjectPage, route }: { isProjectPage: boolean; route: strin
         aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={menuOpen}
         aria-controls="site-nav"
-        onClick={() => setMenuOpen((open) => !open)}
+        onClick={() => { setMenuOpen((open) => !open); setWorkOpen(false); }}
       >
         <span />
         <span />
         <span />
       </button>
 
-      <nav id="site-nav" className={menuOpen ? "nav-list is-open" : "nav-list"}>
-        {navItems.map((item) => (
+      <nav id="site-nav" className={menuOpen ? "nav-list is-open" : "nav-list"} inert={mobile && !menuOpen}>
+        {navItems.map((item) => item.href === "#work" ? (
+          <div key={item.href} className={`nav-work${workOpen ? " is-open" : ""}`} ref={workRef}
+            onPointerLeave={(event) => { if (!event.currentTarget.contains(document.activeElement)) setWorkOpen(false); }}
+            onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setWorkOpen(false); }}
+            onKeyDown={(event) => {
+              if (event.key === "Escape" && workOpen) {
+                event.preventDefault(); event.stopPropagation(); setWorkOpen(false); workToggleRef.current?.focus();
+              } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                event.preventDefault();
+                const links = Array.from(event.currentTarget.querySelectorAll<HTMLAnchorElement>(".work-dropdown a"));
+                const index = links.indexOf(document.activeElement as HTMLAnchorElement);
+                if (index < 0) focusWorkItem(event.key === "ArrowUp");
+                else links[(index + (event.key === "ArrowDown" ? 1 : links.length - 1)) % links.length]?.focus();
+              }
+            }}>
+            <a href={item.href} className={activeSection === "work" ? "is-active" : undefined}
+              aria-current={activeSection === "work" ? "location" : undefined} onClick={closeNavigation}
+              onPointerEnter={(event) => { if (event.pointerType === "mouse" && !mobile) setWorkOpen(true); }}>{item.label}</a>
+            <button className="work-toggle" ref={workToggleRef} type="button" aria-label="Work categories"
+              aria-expanded={workOpen} aria-controls="work-dropdown" onClick={() => setWorkOpen((open) => !open)}>
+              <TbChevronDown aria-hidden="true" />
+            </button>
+            <ul id="work-dropdown" className="work-dropdown" aria-label="Work categories" hidden={!workOpen}>
+              {categories.map((category) => <li key={category.href}><a href={category.href}
+                aria-current={route === category.href.slice(1) || route.startsWith(`${category.href.slice(1)}-`) ? "page" : undefined}
+                onClick={closeNavigation}>{category.title}</a></li>)}
+            </ul>
+          </div>
+        ) : (
           <a
             key={item.href}
             href={item.href}
             className={activeSection === item.href.slice(1) ? "is-active" : undefined}
             aria-current={activeSection === item.href.slice(1) ? "location" : undefined}
-            onClick={() => setMenuOpen(false)}
+            onClick={closeNavigation}
           >
             {item.label}
           </a>

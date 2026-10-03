@@ -20,7 +20,7 @@ interrupt playback; the current position becomes the scroll starting point
 when the opening finishes. The remaining frames advance with native scroll
 over the remaining hero distance. During the latter part of the desktop scroll,
 the centered framing eases into the 1180 × 478 crop from the supplied reference.
-The video scales uniformly, and the copy stays anchored to the composition.
+The video scales uniformly.
 The pinning distance remains two viewport heights while the frame changes size.
 A narrow 16–28 px edge fade appears only over the final 6% of progress,
 below the character's feet. The hero edge, work section and About background
@@ -71,8 +71,21 @@ deployed assets.
 - `public/assets/hero/wide/`: intro video, posters and 1920 × 824 WebP scroll frames.
 - `public/assets/hero/portrait/`: 720 × 1280 intro video, posters and scroll frames.
 
-The frontend uses native scroll progress over two viewport heights, a single
-animation-frame loop, and a decoded-frame cache capped at 24 desktop / 20 phone
-frames. The canvas render resolution is capped separately. Failed requests keep
+The frontend uses native scroll progress over two viewport heights and a single
+animation-frame loop. Layout is measured on actual viewport/header resizes,
+not on the animated stage's changing dimensions. The idle animation clock resets
+so the first scroll input eases in at the normal frame cadence.
+
+The loader warms compressed frames during the opening (bounded at 20 MiB desktop
+/ 12 MiB phone), independently of its 24 desktop / 20 phone decoded-frame cache.
+At most four downloads and three decodes run together. The current frame and
+predicted upcoming frames take priority, useful late decodes remain cached, and
+fallback frames advance in the playback direction. Reversing reuses compressed
+frames instead of downloading the sequence again. Loading pauses when the hero
+is out of view or the document is hidden. The seating worker accesses only the
+bottom region and reuses spatial coefficients without changing the color grade.
+
+Run the cache/priority/disposal regression checks with `npm run test:hero`
+(Node 24). Failed requests keep
 the last drawn frame; initial media failure uses the final poster. Reduced-motion
 visitors receive a static hero with no video or frame sequence requests.
