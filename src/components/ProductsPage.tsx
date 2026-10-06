@@ -117,7 +117,7 @@ export function ProductsPage() {
         <div className="products-showroom-intro">
           <div className="products-showroom-heading" data-reveal data-products-parallax="0.015">
             <h2 id="products-showroom-title">Showroom Props &amp; Signage</h2>
-            <p>A showroom display combining&nbsp; signage, custom props and 3D<br className="products-desktop-break" /> decorative elements. Each piece&nbsp; designed to support the&nbsp; visual story.</p>
+            <p>A showroom display combining<span className="products-desktop-space" aria-hidden="true">&nbsp;</span> signage, custom props and 3D<br className="products-desktop-break" /> decorative elements. Each piece<span className="products-desktop-space" aria-hidden="true">&nbsp;</span> designed to support the<span className="products-desktop-space" aria-hidden="true">&nbsp;</span> visual story.</p>
           </div>
           <div className="products-container products-showroom-cards" data-reveal data-products-parallax="0.025">
             <FeatureCards features={showroomFeatures} variant="products-features-wide" />

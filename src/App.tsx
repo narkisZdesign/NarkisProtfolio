@@ -5,7 +5,7 @@ import { CategoryHero } from "./components/CategoryHero";
 import { SiteLayout } from "./components/SiteLayout";
 import { ProductsPage } from "./components/ProductsPage";
 import { BrandingPage } from "./components/BrandingPage";
-import { TbArrowRight } from "react-icons/tb";
+import { TbArrowDown, TbArrowRight } from "react-icons/tb";
 import {
   arrowIcon as ArrowIcon,
   assetUrl,
@@ -167,6 +167,28 @@ const packagingCarouselSlots = [
 function PackagingTagCarousel() {
   const [center, setCenter] = useState(3);
   const [paused, setPaused] = useState(false);
+  const [mobileCenter, setMobileCenter] = useState(1);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+
+  const updateMobileCenter = () => {
+    const carousel = carouselRef.current;
+    const card = carousel?.querySelector<HTMLElement>(".packaging-tag-card");
+    if (!carousel || !card || !window.matchMedia("(max-width: 760px)").matches) return;
+    const step = card.offsetWidth + parseFloat(getComputedStyle(carousel).columnGap);
+    setMobileCenter(clamp(Math.round(carousel.scrollLeft / step) + 1, 1, packagingTagImages.length - 2));
+  };
+
+  const moveMobileCarousel = (direction: number) => {
+    const carousel = carouselRef.current;
+    const card = carousel?.querySelector<HTMLElement>(".packaging-tag-card");
+    if (!carousel || !card) return;
+    const step = card.offsetWidth + parseFloat(getComputedStyle(carousel).columnGap);
+    const max = carousel.scrollWidth - carousel.clientWidth;
+    const next = direction > 0 && carousel.scrollLeft >= max - 1 ? 0
+      : direction < 0 && carousel.scrollLeft <= 1 ? max
+      : clamp(carousel.scrollLeft + direction * step, 0, max);
+    carousel.scrollTo({ left: next, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+  };
 
   useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -176,12 +198,13 @@ function PackagingTagCarousel() {
   }, [paused]);
 
   return (
-    <div className="packaging-tag-carousel" data-node-id="12:413" data-name="Group 43"
+    <>
+    <div className="packaging-tag-carousel" ref={carouselRef} onScroll={updateMobileCenter} data-node-id="12:413" data-name="Group 43"
       aria-label="Gift box tag designs" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)} onBlurCapture={() => setPaused(false)}>
       {packagingTagImages.map((item, index) => {
         const slot = packagingCarouselSlots[(index - center + 3 + packagingTagImages.length) % packagingTagImages.length];
-        return <figure className="packaging-tag-card" key={item.file}
+        return <figure className={`packaging-tag-card${index === mobileCenter ? " is-mobile-center" : ""}`} key={item.file}
           style={{
             left: `${slot.left / 1118 * 100}%`,
             width: `${slot.width / 1118 * 100}%`,
@@ -192,6 +215,11 @@ function PackagingTagCarousel() {
         </figure>;
       })}
     </div>
+    <div className="packaging-tag-controls">
+      <button type="button" aria-label="Previous tag designs" onClick={() => moveMobileCarousel(-1)}><ArrowIcon /></button>
+      <button type="button" aria-label="Next tag designs" onClick={() => moveMobileCarousel(1)}><ArrowIcon /></button>
+    </div>
+    </>
   );
 }
 
@@ -300,6 +328,7 @@ function FashionPage() {
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <h3>{step.title}</h3>
                 <p>{step.description}</p>
+                {index < fashionSketchSteps.length - 1 && <TbArrowDown className="fashion-sketch-arrow" aria-hidden="true" />}
               </article>
             ))}
           </div>
@@ -320,7 +349,7 @@ function FashionPage() {
         <section className="fashion-embroidery" aria-labelledby="fashion-embroidery-title">
           <div className="fashion-section-copy">
             <h2 id="fashion-embroidery-title">Embroidery<br />Development</h2>
-            <h3>From Sketch<br />To Stitch</h3>
+            <h3>From Sketch{" "}<br />To Stitch</h3>
             <span aria-hidden="true" />
             <p>Embroidery graphics developed from initial sketches to production-ready artwork. Each design was refined with careful attention to composition, stitch feasibility, placement, and garment application.</p>
           </div>
@@ -345,7 +374,7 @@ function FashionPage() {
           </div>
           <div className="fashion-section-copy fashion-tags-copy">
             <h2 id="fashion-tags-title">Fashion Tags &amp;<br />Label Design</h2>
-            <h3>Completing The<br />Product Experience</h3>
+            <h3>Completing The{" "}<br />Product Experience</h3>
             <span aria-hidden="true" />
             <p>The product experience doesn&apos;t end with the garment itself. Hang tags, woven labels and finishing details strengthen the collection and create a complete, premium presentation.</p>
           </div>
@@ -472,6 +501,7 @@ function PackagingPage() {
           <div className="collection-note" data-reveal data-packaging-parallax="0.016"><h2>In Stores</h2><p>Consistent line look that stands out on the shelf and communicates quality, trust and care.</p></div>
         </section>
 
+        <div className="packaging-bath-layout">
         <section className="bath-case packaging-container" id="packaging-bath">
           <div className="bath-copy" data-reveal data-packaging-parallax="0.016">
             <h2>Packaging Design For Bath<br />Toys Sets Collection</h2>
@@ -484,9 +514,10 @@ function PackagingPage() {
         </section>
 
         <section className="bath-footer packaging-container">
-          <div data-reveal data-packaging-parallax="0.008"><h2>System Highlights</h2><div className="highlights"><article><h3>Shelf-Friendly<br />Hierarchy</h3><p>Clear structure for strong retail visibility.</p></article><article><h3>Easy Product<br />Understanding</h3><p>Clear visuals help communicate the content.</p></article><article><h3>Collection<br />Consistency</h3><p>A unified visual language across all four sets.</p></article></div></div>
+          <div className="bath-highlights" data-reveal data-packaging-parallax="0.008"><h2>System Highlights</h2><div className="highlights"><article><img className="highlight-icon" src={assetUrl("assets/packaging/figma-update/b14ef.png")} alt="" aria-hidden="true" loading="lazy" /><h3>Shelf-Friendly<br />Hierarchy</h3><p>Clear structure for strong retail visibility.</p></article><article><img className="highlight-icon" src={assetUrl("assets/packaging/figma-update/ae16d.png")} alt="" aria-hidden="true" loading="lazy" /><h3>Easy Product<br />Understanding</h3><p>Clear visuals help communicate the content.</p></article><article><img className="highlight-icon" src={assetUrl("assets/packaging/figma-update/5404c.png")} alt="" aria-hidden="true" loading="lazy" /><h3>Collection<br />Consistency</h3><p>A unified visual language across all four sets.</p></article></div></div>
           <div className="how-it-works" data-reveal data-packaging-parallax="0.008"><h2>How It Works</h2><div><span><img src={assetUrl("assets/packaging/figma-update/bddd8.png")} loading="lazy" decoding="async" alt="Unbox" /><b>Unbox</b></span><span><img src={assetUrl("assets/packaging/figma-update/73b18.png")} loading="lazy" decoding="async" alt="Connect" /><b>Connect</b></span><span><img src={assetUrl("assets/packaging/figma-update/b2a76.png")} loading="lazy" decoding="async" alt="Play" /><b>Play</b></span></div></div>
         </section>
+        </div>
 
         <section className="gift-box-section" id="packaging-gift-boxes" aria-labelledby="gift-box-title"
           style={{ backgroundImage: `url(${assetUrl("assets/packaging/figma-update/giftsets-latest.png")})` }}>
@@ -608,6 +639,12 @@ function About() {
             <span key={line}>{line}</span>
           ))}
         </p>
+        <div
+          className="about-visual about-visual-mobile"
+          role="img"
+          aria-label="Narkis Zur avatar with notebook and color palette"
+          style={{ backgroundImage: `url(${assetUrl("assets/about_me.png")})` }}
+        />
         <p>
           Hi, I&apos;m Narkis. I&apos;m a multidisciplinary graphic designer with a passion for
           clear aesthetics, smart solutions, and visual storytelling.

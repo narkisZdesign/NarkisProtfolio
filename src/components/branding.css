@@ -164,3 +164,77 @@
   .reef-digital .reef-board, .reef-print .reef-board { display: flex; }
   .reef-board > .reef-interface { width: 100% !important; }
 }
+
+/* Phone typography and case-study layouts match the other portfolio pages. */
+@media (max-width: 760px) {
+  .branding-page {
+    --branding-section-title: clamp(24px, 6.1vw, 44px);
+    --branding-feature-title: clamp(13px, 3.6vw, 26px);
+    --branding-subtitle: clamp(16px, 4.3vw, 31px);
+    --branding-body: clamp(13px, 3.4vw, 24px);
+  }
+  .branding-container { width: calc(100% - 11vw); }
+  .branding-page .category-hero-layout { display: grid; grid-template-columns: minmax(0, 1fr); width: calc(100% - 16vw); padding: clamp(40px, 13vw, 88px) 0 clamp(40px, 12vw, 80px); }
+  .branding-page .category-hero-copy { display: contents; }
+  .branding-page .category-hero .category-hero-title { order: 0; font-size: clamp(38px, 11.7vw, 88px); font-weight: 800; line-height: 1.1; }
+  .branding-page .category-hero-description { order: 1; max-width: none; margin-top: 10px; font-size: var(--branding-subtitle); line-height: 1.2; }
+  .branding-page .category-hero-back { order: 2; display: flex; align-items: center; width: fit-content; min-height: 44px; margin-top: clamp(14px, 4.8vw, 36px); color: #a98c74; font-size: clamp(13px, 3.65vw, 27px); }
+  .branding-page .category-hero-art { order: 3; width: 100%; height: 64vw; margin-top: 12px; --art-height: 52vw; --art-top: 4vw; }
+  .branding-page .category-hero-art .category-hero-sketch { left: -3%; }
+  .branding-page .category-hero-art .category-hero-object { right: -6%; }
+  .branding-page .category-hero-services { order: 4; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: calc(100% + 10vw); margin-left: -5vw; gap: 2vw; margin-top: 5vw; }
+  .branding-page .category-hero-services > span { max-width: none; flex-direction: row; align-items: center; gap: 1vw; font-size: clamp(11px, 3vw, 22px); text-align: left; }
+  .branding-page .category-hero-services img { width: 7vw; height: 7.5vw; border-radius: 6px; }
+  .branding-page .category-hero-service-label { min-width: 0; }
+
+  .reef-board { width: calc(100% - 11vw); left: 5.5vw; padding: 5vw 0 8vw; }
+  .reef-logo { width: min(58vw, 320px); margin-bottom: 3vw; }
+  .reef-intro h2 { font-size: var(--branding-subtitle); font-weight: 500; line-height: 1.2; text-transform: none; }
+  .reef-intro-rule { margin: 4vw auto; }
+  .reef-intro-description { padding: 0; font-size: var(--branding-body); font-weight: 400; line-height: 1.35; }
+  .branding-page .branding-features,
+  .reef-intro .branding-features { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5vw; }
+  .reef-intro .branding-features { margin-top: 5vw; }
+  .branding-feature { display: grid; align-content: start; gap: 7px; min-height: 0; padding: 3vw 2.5vw; border-radius: clamp(8px, 2vw, 14px); }
+  .branding-feature-icon { width: clamp(40px, 12vw, 76px); height: clamp(42px, 12.5vw, 79px); margin: 0 auto; }
+  .branding-feature h3 { min-height: 0; margin-bottom: 0; font-family: Inter, Arial, sans-serif; font-size: var(--branding-feature-title); font-weight: 600; line-height: 1.2; }
+  .branding-feature p { font-size: var(--branding-body); font-weight: 400; line-height: 1.35; }
+  .reef-heading h2 { font-size: var(--branding-section-title); font-weight: 700; line-height: 1.1; text-transform: none; }
+  .reef-heading p { font-size: var(--branding-body); font-weight: 400; line-height: 1.35; margin-top: 10px; }
+  .reef-heading,
+  .reef-print .reef-heading { grid-column: 1 / -1; margin-bottom: 0; padding: 4vw; border-radius: clamp(8px, 2vw, 14px); }
+  .reef-digital .reef-heading { background: rgb(252 249 247 / 92%); }
+  .reef-digital .reef-board { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3vw; }
+  .reef-print .reef-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5vw; }
+  .reef-board > .reef-art { border-radius: clamp(6px, 1.5vw, 12px); overflow: hidden; transform: none; }
+  .reef-print .reef-board > [data-node-id="1:18"],
+  .reef-print .reef-board > [data-node-id="1:19"] { aspect-ratio: 1; }
+  .reef-print .reef-board > [data-node-id="1:18"] img,
+  .reef-print .reef-board > [data-node-id="1:19"] img { object-fit: contain; }
+  .reef-print .reef-board > [data-node-id="1:14"] { grid-column: 1 / -1; }
+
+  .branding-academy { padding-top: 7vw; scroll-margin-top: 64px; }
+  .branding-academy-intro { grid-template-columns: minmax(0, 1fr); gap: 5vw; }
+  .branding-academy-copy { order: -1; padding-top: 0; }
+  .branding-academy-copy h2 { font-size: var(--branding-section-title); font-weight: 700; line-height: 1.1; }
+  .branding-academy-copy h3 { margin-top: 10px; font-size: var(--branding-subtitle); font-weight: 500; line-height: 1.2; }
+  .branding-academy-rule { width: 17%; height: 2px; margin: 4vw 0 3.5vw; }
+  .branding-academy-copy > p { max-width: none; font-size: var(--branding-body); font-weight: 400; line-height: 1.35; text-align: left; }
+  .branding-academy .branding-features { margin-top: 5vw; gap: 2.5vw; }
+  .branding-gallery { margin: 7vw 0; }
+  .branding-gallery-row { gap: 2.5vw; margin-bottom: 2.5vw; }
+  .branding-gallery-row:first-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .branding-gallery-row:last-child { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2vw; margin-bottom: 0; }
+  .branding-gallery-row:last-child > :last-child { grid-column: auto; }
+  /* Photo tiles carry desktop aspect ratios inline. */
+  .branding-gallery-row:first-child .branding-photo { aspect-ratio: .9 !important; }
+  .branding-gallery-row:last-child .branding-photo { aspect-ratio: 1.2 !important; }
+  .branding-photo { border-radius: clamp(6px, 1.5vw, 12px); }
+  .branding-photo:hover > img { scale: none; }
+}
+
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .reef-board { width: calc(100% - 11vw); left: auto; margin-inline: auto; }
+  .reef-logo { width: min(58vw, 320px); }
+  .reef-intro h2, .reef-intro-description { margin-block: 3vw; }
+}

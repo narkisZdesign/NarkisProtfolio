@@ -144,9 +144,9 @@ function Header({ isProjectPage, route }: { isProjectPage: boolean; route: strin
         ))}
       </nav>
 
-      <a className="header-cta" href={siteConfig.contactUrl} target="_blank" rel="noreferrer">
+      <a className="header-cta" href={siteConfig.contactUrl} target="_blank" rel="noreferrer" aria-label={siteConfig.ctaLabel}>
         <TbBrandWhatsapp aria-hidden="true" />
-        {siteConfig.ctaLabel}
+        <span>{siteConfig.ctaLabel}</span>
       </a>
     </header>
   );

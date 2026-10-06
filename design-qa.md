@@ -1,146 +1,75 @@
-# Design QA
+# Mobile homepage design QA
+
+## Follow-up: mobile Fashion page and Products card
 
 final result: passed
 
-## Source References
+- Scope: the Products card on the homepage and the Fashion page at up to 760 CSS px. Previous homepage/header/footer work is retained. All new layout overrides are inside this breakpoint.
+- Source references: the seven user images in C:/Users/narki/AppData/Local/Temp/, starting with codex-clipboard-24208849-b93b-4d86-a263-34627a72a22e.png. The explicit instructions override the references: swap selected gallery photos 01 and 03 on mobile; leave the overview text background transparent.
+- Evidence: C:/Users/narki/AppData/Local/Temp/narkis-fashion-mobile-qa/. Captures include mobile-products-card.png, mobile-hero.png, mobile-overview.png, mobile-gallery-sketch.png, mobile-more-embroidery.png, and mobile-tags-footer.png. The gallery/sketch and overview reference/render comparisons are comparison-gallery-sketch.png and comparison-overview.png; both were reviewed as composite images.
+- Products: reuse the existing transparent stand asset, position it on the right, retain the sketch behind it, and keep the original desktop video unchanged.
+- Fashion layout: title/copy/link, shirt artwork, three horizontal service chips; video with right-side copy and four translucent process cards; 2+3 selected gallery; five image-left/text-right sketch rows with downward arrows; More Designs copy above four images; embroidery and tags copy above three-image rows; short details-video strip; shared footer.
+- Gallery order: visual rows [selected-03, selected-02] and [selected-01, selected-04, selected-05]. Desktop DOM/layout order remains 01–05. Mobile shows the supplied still photographs without sticky hover substitution.
+- Responsive checks: 320, 375, 390, 430, 760 and requested 761 px. The in-app browser rounds the last request to 762 CSS px; the mobile override is absent there. All measured scroll widths equal client widths, with no overflowing text. Process cards retain two columns; a final check after icon sizing found no content outside cards at 320 or 760. Landscape 760 x 390 also has no horizontal overflow.
+- Interaction checks: the Fashion category opens the page; the back link returns to #work after the existing homepage animation/layout settles; the shared menu opens and closes. The overview video plays muted with playsInline. Its text background measures rgba(0, 0, 0, 0). No current runtime errors after a fresh reload; a transient HMR error during editing was corrected before validation.
+- Desktop preservation: 56 geometry/font/display records at 1440 x 900 and the 761/762 boundary match the pre-edit records within 0.01 px. The sticky header's document-space scroll offset is excluded. Large desktop screenshot capture was unavailable in this browser session, so this follow-up uses measured layout preservation rather than claiming pixel-identical screenshots.
+- Validation: npm run build passed; npm run test:hero passed all seven tests. No dependencies, routes, APIs, or media files were added.
+- Accepted fidelity limits: the original landscape overview video crops differently across phone widths and animation frames; the existing sketch-step assets are small, pre-cropped raster images. Typography, spacing, gallery crop and card sizing are fluid to preserve reading and avoid clipping. No actionable P0/P1/P2 issues remain within this scope.
 
-- Full-page reference: `C:\Projects\Nprotfolio\full_first_page.jpg`
-- Hero reference: `C:\Projects\Nprotfolio\hero.jpg`
-- Categories reference: `C:\Projects\Nprotfolio\categories.png`
-- About reference: `C:\Projects\Nprotfolio\about_me.png`
-- Motion reference: `C:\Projects\Nprotfolio\scrolling_animation_video.mp4`
-- Original source frame sequence: `C:\Projects\Nprotfolio\source_assets\video_frames\frame_001.png` through `frame_200.png`
-- Hosted optimized frame sequence: `C:\Projects\Nprotfolio\public\assets\hero_frames\frame_001.webp` through `frame_200.webp`
-
-## Rendered Evidence
-
-- Local URL: `http://127.0.0.1:5173`
-- Desktop screenshot: `C:\Users\zomry\AppData\Local\Temp\nportfolio-qa\desktop-passed-2.png`
-- Mobile screenshot: `C:\Users\zomry\AppData\Local\Temp\nportfolio-qa\mobile-passed.png`
-- Scroll-frame screenshot: `C:\Users\zomry\AppData\Local\Temp\nportfolio-qa\scroll-frames-final.png`
-- Browser path: in-app Browser plugin failed during setup with a local runtime path error, so QA used Python Playwright 1.58.0 as fallback.
-
-## Checks
-
-- Build: passed with `npm run build`.
-- Page identity: title is `Narkis Zur | Graphic Designer`.
-- Blank-page check: passed; rendered body includes `Narkis Zur`, `Packaging`, and `About Me`.
-- Framework overlay: none visible in screenshots.
-- Console health: passed; no warnings or errors captured during QA.
-- Interaction proof: the Work nav anchor moves to `http://127.0.0.1:5173/#work`.
-- Contact proof: CTA uses `mailto:hello@narkiszur.com`.
-- Hero scroll animation proof: initial frame is `frame_001.webp`; after six wheel events the hero reaches `frame_040.webp` while `scrollY` remains `0`; after the sequence completes it reaches `frame_200.webp`, and later wheel input scrolls down the page.
-- Responsive proof: desktop `1366x900` and mobile `390x844` screenshots captured.
-- Category card proof: Video category uses `video_wireframe.jpeg`, `gimbal_still.webp`, and `gimbal_rotate.gif`; hover/focus changes the visible gimbal layer from still image to GIF.
-
-## Fidelity Ledger
-
-- Hero: uses the optimized 200-frame WebP sequence derived from the supplied PNG frames, transitioning from sketch to polished teal studio before normal downward scrolling. Visible duplicate hero heading was removed; code keeps an accessible H1.
-- Categories: uses `categories.png` as the artwork source, with code-native card labels and arrow controls. Slight source-label ghosting remains under some cards because the original artwork contains baked-in text, but it is muted and does not block readability.
-- Video category: rebuilt as the first reusable framed category card with an inner visual frame, lower label row, floating gimbal, and GIF rotation on hover/focus.
-- About: uses a cropped portion of `about_me.png` for the avatar/notebook artwork so the service/process/tool panels are not duplicated inside the image.
-- Services/process/tools: rebuilt as code-native panels with matching rounded surfaces, teal icon language, compact typography, and soft shadows.
-- Motion: top-of-page wheel, touch, and keyboard scroll input advances the hero frames before normal page scrolling; reveal-on-scroll and hover lift continue below the hero, with reduced-motion support.
-- Mobile: collapses into a single-column portfolio page with a working compact menu and readable card/panel content.
-
-## Acceptance
-
-The implementation is faithful to the accepted design direction and source images for V1. Remaining differences are intentional implementation choices for a responsive, editable, code-native website rather than a single static screenshot.
-
----
-
-# Shared header and footer design QA
+## Previous homepage review
 
 final result: passed
 
-## Sources and evidence
+## Target and evidence
 
-- Footer source: `C:/Users/narki/Downloads/Narkis Zur portfolio layout mockup.png` (1487 × 339).
-- Header source: `C:/Users/narki/Downloads/‏‏Narkis Zur portfolio layout mockup - עותק.png` (1487 × 93, including the adjoining hero edge). The source was captured before its Downloads copy became unavailable.
-- Supplied logo: `C:/לתיק עבודות/פרוטפוליו/לוגו/whitenarkislogo.png` (1875 × 839, transparent PNG), used without changing its artwork or aspect ratio.
-- Implementation: `http://127.0.0.1:5174/#home` in the Codex in-app browser.
-- Evidence directory: `C:/Users/narki/AppData/Local/Temp/narkis-header-footer-review/`.
-- Full component comparisons: `header-comparison-final.png` and `footer-comparison-final.png`, with source above implementation in the same image.
-- Final component captures: `header-desktop.jpg` (1487 × 86), `footer-desktop.jpg` (1487 × 338), `header-mobile.jpg`, and `footer-mobile.jpg`.
-- Desktop viewport: 1487 × 900. Responsive checks: 390 × 844, 320 × 844, and 768 × 844. Screenshot comparisons use equal pixel widths; the footer source height is normalized from 339 to 338, and the header comparison uses the 86-pixel component region.
-- States: Home selected, footer at page end, mobile menu expanded then closed after selecting About, and Work selected on project pages.
+- Scope: homepage content at widths up to 760 CSS px; shared mobile header/footer on all routes. Desktop layout is preserved.
+- Source visual truth: C:/Users/narki/AppData/Local/Temp/codex-clipboard-eab05bd7-8a82-4e05-8fdd-c84676a66018.png (hero), codex-clipboard-ba31612d-aa7b-4470-afb5-a9244a2540fc.png (work), codex-clipboard-ad164a9e-816c-4664-a588-6a7eb67dcfbf.png (About), codex-clipboard-7d9bdea0-4e4b-4540-911a-26b461e3db89.png (services/footer), in the same Temp directory.
+- Source images: 941 x 1672 px. The user's subsequent correction overrides card order: Packaging / Products, then Fashion / Branding. WhatsApp remains an icon beside the menu.
+- Browser: Codex in-app browser; no external Playwright fallback.
+- Local implementation: http://127.0.0.1:5173/
+- Evidence directory: C:/Users/narki/AppData/Local/Temp/narkis-mobile-qa/
+- Mobile CSS viewport: 390 x 844. Browser screenshots: 375 x 811 px; approximately 0.96 image pixels per CSS pixel. The persistent desktop scrollbar is excluded from content comparisons. References are normalized to 360 content-image pixels wide. These are section comparisons, not exact viewport-height replicas.
+- Full section comparisons: comparison-work.png, comparison-about.png, comparison-services.png. States: #work, #about, #services after scrolling/reveal transitions settle.
+- Focused checks: header logo/WhatsApp/menu, card captions/arrows, About illustration edges and button, service dividers, footer contact links. Raw implementation captures: mobile-work.png, mobile-about.png, mobile-services.png, mobile-hero.png.
+- Desktop evidence: desktop-before.png and desktop-after.png, plus desktop-before.json and desktop-verified.json. Same 1440 x 900 CSS viewport and held 00:02 hero state; screenshot size 1424 x 4574 px. All 33 measured layout/type/color records match exactly.
 
-## Findings and comparison history
+## Fidelity review and accepted differences
 
-- Initial comparison: footer headline tracking was slightly too tight, and the footer logo was slightly oversized. Adjusted tracking from -0.035em to -0.015em and logo width from 136 to 130 pixels; refined header padding and text sizes. The final combined comparisons show the intended two-column composition, headline wrapping, separator alignment, and logo placement.
-- Interaction check: returning Home from a project page could retain the Work underline. Header selection now responds to the current hash route. The post-fix capture shows Home underlined.
-- Small-phone check: added compact control spacing below 360 pixels so the logo, WhatsApp button, and menu fit at 320 pixels without overlap.
-- No actionable P0/P1/P2 findings remain. Minor font-rendering and source-background texture differences are P3; the supplied logo artwork remains intact.
+- Typography: mobile homepage uses the existing Inter font; headings, descriptions and captions have fluid sizes. No clipped text at tested widths. Desktop font and layout records remain unchanged.
+- Spacing/layout: work is a 2 x 2 grid without horizontal scrolling; About reads heading/lead, illustration, paragraphs, CTA; services remain 2 x 3 even at 320 px; footer is centered with separate contact rows. Section spacing is fluid rather than fixed to the mockup's canvas height. Contact/header targets and the About CTA retain practical dimensions.
+- Colors/tokens: existing petrol, warm background, white surfaces and peach accents are retained. Card arrows have no circular background; WhatsApp has no text or filled button in mobile.
+- Assets: original logo, About artwork, service icons and category posters are reused. Fashion has a reliable still image on touch screens. No generated replacements or placeholder artwork.
+- Copy: all homepage and contact copy preserved; no new routes or APIs.
+- Intentional hero difference: the user chose the existing animation over a newly composed mobile asset. The original portrait media is already cropped; the implementation adds no further crop, keeps its 9:16 ratio, and does not claim an exact match to the complete lettering/wave in the supplied still. Two-second intro, scroll-controlled continuation and existing cache remain intact.
 
-## Required fidelity surfaces
+## Comparison history
 
-| Surface | Result |
+1. First desktop check caught an 8 px paragraph-margin change from inserting the hidden mobile artwork. Restored the adjacent paragraph rule. Final desktop comparison: zero differences.
+2. First reference comparison identified a clipped left edge of the About background and overly heavy mobile typography. Adjusted illustration crop and selected the already-loaded Inter font for mobile only; updated comparisons show the natural artwork edge.
+3. Inter changed the CTA text width and initially wrapped View my work. Increased its width, reduced internal gap, and kept its label on one line. Final About capture confirms the correction.
+4. First 320 px browser check exposed overflow from the old body minimum width plus a desktop scrollbar. Reset the minimum width in the mobile breakpoint. Final client width and scroll width both equal 305 px in that browser viewport.
+5. Added mobile anchor clearance to About/services so reveal/layout settling cannot put a heading under the sticky header. Final About title top: 76.875 px; header bottom: 64 px.
+6. Tightened service row padding/icon sizing and contact row spacing after reference comparison. The final services/footer capture uses the revised spacing.
+
+## Functional and responsive checks
+
+| Check | Result |
 | --- | --- |
-| Fonts and typography | Inter weights and sizes reproduce the reference hierarchy, with a two-line footer headline and peach emphasis. |
-| Spacing and layout | Shared 86-pixel desktop header, approximately 339-pixel footer, correct dividers and alignment; mobile footer stacks cleanly. |
-| Colors and tokens | Dark teal sampled from the references, warm white text, and peach button/highlight are shared across both components. |
-| Image quality | Original transparent logo in both locations; uniform sizing; contact and WhatsApp icons use the existing Tabler icon library. |
-| Copy and content | Reference headline and four navigation labels; requested email and phone replace placeholders, with matching mailto, tel, and WhatsApp links. |
+| Build/type check: npm run build | Passed |
+| Existing frame/cache regression suite: npm run test:hero | 7 passed |
+| Page identity, meaningful content, framework error overlay | Passed; correct title/content, no overlay |
+| Console health on application URL | No relevant warnings/errors |
+| Widths 320, 375, 390, 430, 760 and 761 | No document overflow or clipped text; two mobile columns, previous desktop/tablet rules above breakpoint |
+| Breakpoint rounding | In-app browser requested 761 but reported 762 due viewport rounding; desktop branch verified |
+| Landscape 760 x 390, then portrait | No overflow; portrait canvas remains 720 x 1280 |
+| Header/menu | WhatsApp outside nav with correct wa.me destination; 44 x 44 targets; open/close/Escape work |
+| Work links | All four hrefs retained; visual order Packaging/Products/Fashion/Branding verified; Products navigation exercised |
+| Shared project chrome | Products route has 44 px menu/WhatsApp targets and vertically stacked footer contacts |
+| Hero intro | Video paused at exactly 2 seconds; first scroll frame is frame 1 at time 2 |
+| Hero scroll/reverse | Forward progression to frame 193 at time 10; reverse returns to earlier frames |
+| Hero arrow and About CTA | Both navigate to #work; state confirmed after transitions settle |
+| Contact links | Correct mailto:narkis300@gmail.com and tel:+972504225510; no message/call sent |
+| Reduced-motion branch | Isolated built-app fixture: phase static, frame 193, final poster loaded, no intro video, section height about 667 px |
+| Media failure | Isolated built-app fixture returns 404 for intro/portrait frames; phase fallback, loaded final poster, caption visible, video hidden |
 
-Focused comparisons use the complete header/footer regions, where all type, icons, logos, and dividers are readable; further magnification was unnecessary.
-
-## Validation
-
-- Home, Packaging, Fashion, Products, and Branding each contain one shared header and one shared footer.
-- Footer Work link from Branding returns to the homepage Work section.
-- Mobile menu opens, selecting About navigates and closes it, and body scrolling is restored.
-- No header/footer control clipping at 320, 390, 768, or 1487 pixels.
-- Clean reload: correct URL/title, meaningful page content, no Vite overlay, and no console warnings/errors. A transient React warning during hot replacement cleared after a full reload.
-- `npm run build` and `git diff --check` pass.
-- Contact destinations verified: `mailto:narkis300@gmail.com`, `tel:+972504225510`, and `https://wa.me/972504225510`. External mail, telephone, and WhatsApp applications were not launched.
-
-## Implementation checklist
-
-- [x] Replace initials with the supplied logo.
-- [x] Match shared desktop header/footer references.
-- [x] Update contact details and destinations.
-- [x] Apply footer to every route.
-- [x] Verify navigation, responsive layouts, console health, and production build.
-
-Other browser engines and external contact applications remain untested.
-
----
-
-# Compact header and footer design QA
-
-final result: passed
-
-## Source and evidence
-
-- Updated reference: `C:/Users/narki/AppData/Local/Temp/codex-clipboard-5f18aad5-6faf-4f0e-a039-e1438021ee32.png` (1618 × 668).
-- Preview: `http://127.0.0.1:5174/#home`.
-- Evidence directory: `C:/Users/narki/AppData/Local/Temp/narkis-compact-chrome-review/`.
-- `header-comparison.png` and `footer-comparison.png` show source above implementation, with a neutral separator. Header regions are 1618 × 78. Footer source region is normalized to the rendered 1603 × 121 width, accounting for the browser scrollbar.
-- Final captures: `header-desktop.jpg`, `footer-desktop.jpg`, `desktop-top.jpg`, `desktop-full.jpg`, and `mobile-footer.jpg`. Responsive geometry is recorded in `responsive-checks.json`.
-- Desktop viewport: 1618 × 900; additional checks at 320, 390, 768, and 1280 × 844. Captured states include Home selected, footer at page end, and the mobile menu opening and closing after selecting Services.
-
-## Fidelity and comparison history
-
-This compact reference supersedes the taller header/footer composition recorded above. The shared desktop header is now 78 pixels high, and the footer is 121 pixels high. The footer uses one row containing the headline, vertical divider, and horizontal contact links. The previous footer navigation and copyright/logo row have been removed to match the new reference.
-
-| Surface | Result |
-| --- | --- |
-| Fonts and typography | Inter with a 32-pixel desktop footer headline, white text, and peach emphasis on “final detail.” |
-| Spacing and layout | Reference header height, logo size, right-aligned navigation and button; compact footer with centered row and aligned divider/contact icons. |
-| Colors and tokens | Shared dark teal `#014555`, white text, and peach accents. |
-| Image quality | Original transparent logo remains uniformly scaled; existing Tabler icons remain crisp. |
-| Copy and content | “From the first idea to the final detail.” with the requested email and phone. |
-
-The first compact comparison showed the headline slightly smaller than the reference. Increasing its desktop size to 32 pixels aligned its width with the source. Complete header/footer comparison images were inspected after this adjustment. No actionable P0/P1/P2 findings remain; minor source texture and font-rendering differences are P3.
-
-## Validation
-
-- The components remain shared by Home and all project routes. Packaging was rechecked with its sticky project navigation using the new 78-pixel header offset.
-- No horizontal overflow or clipped header/footer controls at any checked width. Phone layouts use a 64-pixel header and a naturally stacked footer of approximately 174 pixels.
-- Mobile menu opens, Services selection closes it, and body scrolling is restored.
-- Contact destinations remain `mailto:narkis300@gmail.com`, `tel:+972504225510`, and `https://wa.me/972504225510`.
-- Fresh reload displays the correct page with no console warnings or errors.
-- Final `npm run build` and `git diff --check` pass.
-- Temporary viewport override was reset, and the updated Home preview remains open.
-
-External contact applications and other browser engines were not launched.
+Reduced-motion and failure fixtures live outside the repository and simulate those inputs against the built application. They do not alter OS preferences or production sources. Native iOS/Safari hardware was not available; physical-device verification remains a test gap. No actionable P0/P1/P2 findings remain. Minor differences in illustration rendering, font wrapping and fluid section spacing follow reuse of the existing assets and responsive typography.

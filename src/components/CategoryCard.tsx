@@ -1,5 +1,5 @@
 import { useRef, type CSSProperties } from "react";
-import { arrowIcon as ArrowIcon, type Category } from "../data/siteContent";
+import { assetUrl, arrowIcon as ArrowIcon, type Category } from "../data/siteContent";
 
 export function CategoryCard({ category, index }: { category: Category; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -20,6 +20,7 @@ export function CategoryCard({ category, index }: { category: Category; index: n
       data-reveal
       style={{ "--delay": `${index * 60}ms` } as CSSProperties}
       onMouseEnter={() => {
+        if (window.matchMedia("(max-width: 760px)").matches) return;
         hovered.current = true;
         if (videoRef.current) {
           videoRef.current.playbackRate = category.title === "Branding" ? 1.75 : 1;
@@ -33,6 +34,15 @@ export function CategoryCard({ category, index }: { category: Category; index: n
       <span className="asset-card-visual">
         <img className="category-background" src={category.visual.background} loading="lazy" decoding="async" alt="" />
         <span className="category-object-wrap" aria-hidden="true">
+          <img
+            className="mobile-category-poster"
+            src={category.title === "Products"
+              ? assetUrl("assets/products/hero-stand-transparent.png")
+              : category.visual.object ?? assetUrl("assets/categories/fashion.webp")}
+            loading="lazy"
+            decoding="async"
+            alt=""
+          />
           {category.visual.video ? (
             <video
               ref={videoRef}

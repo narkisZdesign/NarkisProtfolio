@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { TbArrowDown } from "react-icons/tb";
 import { assetUrl, siteConfig } from "../data/siteContent";
 import { createHeroFrames } from "../lib/heroFrames";
 import { createHeroSurface } from "../lib/heroSurface";
@@ -159,7 +160,9 @@ export function Hero() {
       sectionTop = bounds.top + window.scrollY;
       distance = Math.max(1, section.offsetHeight - stage.offsetHeight);
       fullStageWidth = bounds.width;
-      fullStageHeight = Math.max(1, (reducedMotion ? window.innerHeight : distance / 2) - headerHeight);
+      fullStageHeight = mobile
+        ? fullStageWidth * 1280 / 720
+        : Math.max(1, (reducedMotion ? window.innerHeight : distance / 2) - headerHeight);
       // Draw the complete source frame once. CSS crops it with a uniform scale,
       // matching the intro video and avoiding canvas reallocations while framing.
       const width = mobile ? 720 : heroMedia.wideWidth;
@@ -301,6 +304,7 @@ export function Hero() {
         <div className="hero-white-blend" aria-hidden="true" />
         <div className="hero-copy" ref={copyRef}>
           <h1>{siteConfig.heroTitle}</h1>
+          {mobile && <a className="mobile-scroll-cue" href="#work" aria-label="Scroll to work"><TbArrowDown aria-hidden="true" /></a>}
         </div>
         <a className="scroll-cue" href="#work" aria-label="Scroll to work"><span /></a>
       </div>
