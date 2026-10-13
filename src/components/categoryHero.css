@@ -32,9 +32,8 @@
 .category-hero-service-label.has-line-breaks > span { display: block; white-space: nowrap; }
 
 .category-hero-art { position: relative; min-width: 0; height: 435px; pointer-events: none; }
-.category-hero-art-pair { position: relative; width: 100%; height: 100%; isolation: isolate; background: var(--category-bg); }
-/* The mobile sketch extends outside the pair; blend that edge with the full hero background. */
-.category-hero-art--packaging .category-hero-art-pair { isolation: auto; }
+/* Sketches can extend outside the pair; blend their paper with the full hero background. */
+.category-hero-art-pair { position: relative; width: 100%; height: 100%; isolation: auto; background: var(--category-bg); }
 .category-hero-art img { position: absolute; object-fit: contain; }
 .category-hero-sketch { z-index: 1; mix-blend-mode: multiply; }
 .category-hero-object { z-index: 2; mix-blend-mode: normal; }
@@ -52,7 +51,7 @@
 .category-hero-art--branding .category-hero-object { height: calc(var(--art-height) * 1716 / 1447); top: calc(var(--art-top) - var(--art-height) * 195 / 1447); right: 15px; }
 
 /* Products retains the existing dimensions and distance between the two layers. */
-.category-hero-art--products .category-hero-art-pair { position: absolute; width: calc(100% - 15px); left: 50%; transform: translateX(-50%); }
+.category-hero-art--products .category-hero-art-pair { position: absolute; width: calc(100% - 15px); left: 7.5px; }
 .category-hero-object { width: 312px; height: 404px; top: 0; right: 15px; }
 .category-hero-art--products .category-hero-sketch { width: 440px; height: 400px; top: 20px; left: 0; opacity: .38; transform: scaleX(-1); mask-image: radial-gradient(ellipse at center, black 48%, transparent 76%); }
 .category-hero-art--products .category-hero-object { width: 330px; height: 350px; top: 24px; right: 0; }
@@ -66,7 +65,7 @@
   .category-hero-art:not(.category-hero-art--products) { --art-height: 260px; --art-top: 80px; }
   .category-hero-art:not(.category-hero-art--products) .category-hero-sketch { left: 0; }
   .category-hero-art:not(.category-hero-art--products) .category-hero-object { right: 0; }
-  .category-hero-art--products .category-hero-art-pair { width: 100%; }
+  .category-hero-art--products .category-hero-art-pair { width: 100%; left: 0; }
   .category-hero-art--products .category-hero-sketch { width: 65%; height: auto; left: 0; top: 70px; }
   .category-hero-art--products .category-hero-object { width: 58%; height: auto; top: 35px; right: 0; }
 }
@@ -77,7 +76,7 @@
   .category-hero-art:not(.category-hero-art--products) { --art-height: 190px; --art-top: 15px; }
   .category-hero-art:not(.category-hero-art--products) .category-hero-sketch { left: 15%; }
   .category-hero-art:not(.category-hero-art--products) .category-hero-object { right: 6%; }
-  .category-hero-art--products .category-hero-art-pair { left: 50.5%; }
+  .category-hero-art--products .category-hero-art-pair { left: 0.5%; }
   .category-hero-art--products .category-hero-sketch { width: 67%; height: 210px; top: 12px; left: 5%; }
   .category-hero-art--products .category-hero-object { width: 48%; height: 200px; top: 10px; right: 6%; }
   .category-hero-copy { width: 100%; padding: 5px 0 36px; }
