@@ -3111,7 +3111,8 @@ img[data-lightbox]:focus-visible {
   .home-page .category-products { order: 1; }
   .home-page .category-fashion { order: 2; }
   .home-page .category-branding { order: 3; }
-  .home-page .category-card { min-height: 0; aspect-ratio: 0.8; border: 0; border-radius: clamp(12px, 3vw, 22px); }
+  /* Give Safari a definite width before it derives the card height from the aspect ratio. */
+  .home-page .category-card { width: 100%; min-height: 0; aspect-ratio: 0.8; border: 0; border-radius: clamp(12px, 3vw, 22px); }
   .home-page .asset-card-visual { height: 100%; min-height: 0; border-radius: inherit; }
   .home-page .category-object-wrap { animation: none; max-width: none; }
   .home-page .category-object-wrap video { display: none; }
