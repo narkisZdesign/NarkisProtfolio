@@ -3391,9 +3391,7 @@ img[data-lightbox]:focus-visible {
   .packaging-page .category-hero .category-hero-title { order: 0; font-size: clamp(38px, 11.7vw, 88px); font-weight: 800; line-height: 1.1; }
   .packaging-page .category-hero-description { order: 1; max-width: none; margin-top: 10px; font-size: var(--packaging-subtitle); line-height: 1.2; }
   .packaging-page .category-hero-back { order: 2; display: flex; align-items: center; width: fit-content; min-height: 44px; margin-top: clamp(14px, 4.8vw, 36px); color: #a98c74; font-size: clamp(13px, 3.65vw, 27px); }
-  .packaging-page .category-hero-art { order: 3; width: 100%; height: 64vw; margin-top: 12px; --art-height: 52vw; --art-top: 4vw; }
-  .packaging-page .category-hero-art .category-hero-sketch { left: -3%; }
-  .packaging-page .category-hero-art .category-hero-object { right: -6%; }
+  .packaging-page .category-hero-art { order: 3; width: 100%; height: 64vw; margin-top: 12px; }
   .packaging-page .category-hero-services { order: 4; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: calc(100% + 10vw); margin-left: -5vw; gap: 2vw; margin-top: 5vw; }
   .packaging-page .category-hero-services > span { max-width: none; flex-direction: row; align-items: center; gap: 1vw; font-size: clamp(11px, 3vw, 22px); text-align: left; }
   .packaging-page .category-hero-services img { width: 7vw; height: 7.5vw; border-radius: 6px; }

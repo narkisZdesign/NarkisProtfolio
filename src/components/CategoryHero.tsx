@@ -1,5 +1,6 @@
 import { categoryHeroes, type CategoryId } from "../data/categoryContent";
 import { assetUrl } from "../data/siteContent";
+import { PackagingHeroArt } from "./PackagingHeroArt";
 import "./categoryHero.css";
 
 export function CategoryHero({ category }: { category: CategoryId }) {
@@ -25,8 +26,14 @@ export function CategoryHero({ category }: { category: CategoryId }) {
         </div>
         <div className={`category-hero-art category-hero-art--${category}`} aria-hidden="true">
           <div className="category-hero-art-pair">
-            <img className="category-hero-sketch" src={assetUrl(content.sketch)} alt="" />
-            <img className="category-hero-object" src={assetUrl(content.object)} alt="" />
+            {category === "packaging" ? (
+              <PackagingHeroArt sketch={content.sketch} object={content.object} />
+            ) : (
+              <>
+                <img className="category-hero-sketch" src={assetUrl(content.sketch)} alt="" />
+                <img className="category-hero-object" src={assetUrl(content.object)} alt="" />
+              </>
+            )}
           </div>
         </div>
       </div>
