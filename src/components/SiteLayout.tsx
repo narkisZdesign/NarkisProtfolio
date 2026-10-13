@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { TbBrandWhatsapp, TbChevronDown, TbMail, TbPhone } from "react-icons/tb";
 import { assetUrl, categories, navItems, siteConfig } from "../data/siteContent";
+import { MobileViewingNotice } from "./MobileViewingNotice";
 
 function Header({ isProjectPage, route }: { isProjectPage: boolean; route: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -177,5 +178,6 @@ export function SiteLayout({ route, isProjectPage, children }: {
     <Header route={route} isProjectPage={isProjectPage} />
     {children}
     <Footer />
+    <MobileViewingNotice />
   </>;
 }
