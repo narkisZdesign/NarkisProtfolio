@@ -33,6 +33,8 @@
 
 .category-hero-art { position: relative; min-width: 0; height: 435px; pointer-events: none; }
 .category-hero-art-pair { position: relative; width: 100%; height: 100%; isolation: isolate; background: var(--category-bg); }
+/* The mobile sketch extends outside the pair; blend that edge with the full hero background. */
+.category-hero-art--packaging .category-hero-art-pair { isolation: auto; }
 .category-hero-art img { position: absolute; object-fit: contain; }
 .category-hero-sketch { z-index: 1; mix-blend-mode: multiply; }
 .category-hero-object { z-index: 2; mix-blend-mode: normal; }
