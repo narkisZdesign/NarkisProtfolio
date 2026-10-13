@@ -106,8 +106,12 @@ function Header({ isProjectPage, route }: { isProjectPage: boolean; route: strin
       <nav id="site-nav" className={menuOpen ? "nav-list is-open" : "nav-list"} inert={mobile && !menuOpen}>
         {navItems.map((item) => item.href === "#work" ? (
           <div key={item.href} className={`nav-work${workOpen ? " is-open" : ""}`} ref={workRef}
-            onPointerLeave={(event) => { if (!event.currentTarget.contains(document.activeElement)) setWorkOpen(false); }}
-            onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setWorkOpen(false); }}
+            onPointerLeave={(event) => {
+              if (event.pointerType === "mouse" && !mobile && !event.currentTarget.contains(document.activeElement)) setWorkOpen(false);
+            }}
+            onBlur={(event) => {
+              if (!mobile && !event.currentTarget.contains(event.relatedTarget)) setWorkOpen(false);
+            }}
             onKeyDown={(event) => {
               if (event.key === "Escape" && workOpen) {
                 event.preventDefault(); event.stopPropagation(); setWorkOpen(false); workToggleRef.current?.focus();

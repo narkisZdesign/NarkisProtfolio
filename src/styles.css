@@ -3092,6 +3092,8 @@ img[data-lightbox]:focus-visible {
   .home-page .section { width: calc(100% - 7vw); }
   .home-page :is(#about, #services) { scroll-margin-top: 24px; }
   .home-page .categories-section { padding: clamp(40px, 15vw, 85px) 0 clamp(44px, 13vw, 90px); }
+  /* Keep category navigation visible even if mobile scroll-reveal callbacks are delayed. */
+  .home-page .categories-section [data-reveal] { opacity: 1; transform: none; transition: none; }
   .home-page .section-heading { margin: 0 1% clamp(25px, 7vw, 48px); }
   .home-page .section-heading span { margin-bottom: 6px; font-size: clamp(11px, 3vw, 20px); }
   .home-page .section-heading h2 { max-width: 13ch; font-size: clamp(28px, 8.6vw, 60px); font-weight: 700; line-height: 1.03; }
