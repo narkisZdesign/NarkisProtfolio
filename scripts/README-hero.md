@@ -1,11 +1,11 @@
 # Hero media pipeline
 
-The active homepage uses **home hero.mp4** (24 fps, 241 frames). Its opening
+The desktop homepage uses **home hero.mp4** (24 fps, 241 frames). Its opening
 plays from 00:00 through exactly 00:02. Scroll frame 001 is source frame 48,
-at 00:02; frame 193 is the last source frame, at 00:10. Both responsive
-variants use the same timestamps and crop consistently across the handoff.
+at 00:02; frame 193 is the last source frame, at 00:10. The dedicated mobile
+source and its three-second handoff are described below.
 
-Rebuild the active assets and their frontend metadata from the repository root:
+Rebuild the desktop assets (and legacy portrait crop) from the repository root:
 
 ```powershell
 python scripts/build-home-hero.py --source 'PATH-TO-home hero.mp4'
@@ -29,6 +29,25 @@ lifts the neutral gray seating toward that background color while retaining
 the character and local foot shadows. Graded frames use the existing bounded
 cache; no pixel processing runs in the scroll handler. Reduced-motion visitors
 receive the same surface treatment on the static final poster.
+
+## Mobile homepage source
+
+At widths up to 760px, the homepage uses `mobile_home_hero_video.mp4` through
+its own `assets/hero/mobile-home-hero/` assets and `src/data/mobileHeroMedia.json`.
+The desktop `wide` assets, two-second intro and scroll timing remain unchanged.
+
+```powershell
+python scripts/build-mobile-home-hero.py --source 'PATH-TO-mobile_home_hero_video.mp4'
+```
+
+The mobile intro stays at 00:00 while the viewing notice is open. Continuing,
+closing the notice, or dismissing it with Escape starts the muted inline intro.
+If the notice was dismissed earlier in the tab, playback starts immediately.
+Both phases include source frame 72 at exactly 00:03. After the intro, the
+remaining 289 source frames follow scroll position, in either direction, through
+00:15. Early scrolling does not skip the opening; its position becomes the
+handoff's starting point. The new portrait artwork is rendered without the
+desktop seating grade. Reduced-motion visitors keep the static final poster.
 
 ## Previous extended hero
 

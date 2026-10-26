@@ -1,0 +1,9 @@
+{
+  "assetRoot": "assets/hero/mobile-home-hero",
+  "sourceName": "mobile_home_hero_video.mp4",
+  "fps": 24.0,
+  "introSeconds": 3,
+  "firstScrollFrame": 72,
+  "frameCount": 289,
+  "lastFrameSeconds": 15.0
+}

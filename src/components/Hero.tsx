@@ -4,10 +4,9 @@ import { assetUrl, siteConfig } from "../data/siteContent";
 import { createHeroFrames } from "../lib/heroFrames";
 import { createHeroSurface } from "../lib/heroSurface";
 import heroMedia from "../data/heroMedia.json";
+import mobileHeroMedia from "../data/mobileHeroMedia.json";
+import { isMobileNoticeDismissed, MOBILE_NOTICE_DISMISSED } from "../lib/mobileViewingNotice";
 
-// Both phases share the source frame at precisely 00:02.
-const FRAME_COUNT = heroMedia.frameCount;
-const INTRO_SECONDS = heroMedia.introSeconds;
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 const smoothstep = (value: number) => value * value * (3 - 2 * value);
 // Centerlines of the red crop in the supplied 1544 × 628 reference.
@@ -39,9 +38,13 @@ export function Hero() {
   const introPlayedRef = useRef(false);
   const scrollStartRef = useRef(0);
   const introTimeRef = useRef(0);
-  const mediaRoot = assetUrl(`${heroMedia.assetRoot}/${mobile ? "portrait" : "wide"}`);
+  const media = mobile ? mobileHeroMedia : heroMedia;
+  const mediaRoot = assetUrl(mobile ? media.assetRoot : `${media.assetRoot}/wide`);
 
   useEffect(() => {
+    // Each source shares its exact boundary frame between autoplay and scroll.
+    const FRAME_COUNT = media.frameCount;
+    const INTRO_SECONDS = media.introSeconds;
     const section = sectionRef.current!;
     const stage = stageRef.current!;
     const canvas = canvasRef.current!;
@@ -53,6 +56,11 @@ export function Hero() {
     swatch.fillRect(0, 0, 1, 1);
     const [r, g, b] = swatch.getImageData(0, 0, 1, 1).data;
     const surface = createHeroSurface([r, g, b]);
+    // The new portrait source is already composed and graded for mobile.
+    // The old seating treatment is specific to the unchanged desktop artwork.
+    const grade = (bitmap: ImageBitmap, progress: number) => mobile
+      ? Promise.resolve(bitmap)
+      : surface.grade(bitmap, progress, false);
     const poster = section.querySelector<HTMLImageElement>(".hero-poster")!;
     const header = document.querySelector<HTMLElement>(".site-header");
     let disposed = false;
@@ -68,6 +76,7 @@ export function Hero() {
     let distance = 1;
     let headerHeight = 0;
     let introDone = introPlayedRef.current || reducedMotion;
+    let introStarted = false;
     let handoffPainted = introDone;
     let videoFrame = 0;
     let introRaf = 0;
@@ -83,12 +92,12 @@ export function Hero() {
     const frames = reducedMotion || !context ? null : createHeroFrames(
       (index) => `${mediaRoot}/frames/frame_${String(index + 1).padStart(3, "0")}.webp`,
       FRAME_COUNT, mobile, requestTick,
-      (bitmap, index) => surface.grade(bitmap, index / max, mobile),
+      (bitmap, index) => grade(bitmap, index / max),
     );
     const paintPoster = async () => {
       if (!reducedMotion || !context || disposed || !poster.naturalWidth) return;
       try {
-        const bitmap = await surface.grade(await createImageBitmap(poster), 1, mobile);
+        const bitmap = await grade(await createImageBitmap(poster), 1);
         if (!disposed) {
           context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
           section.classList.add("is-surface-ready");
@@ -105,7 +114,7 @@ export function Hero() {
     };
 
     const finishIntro = () => {
-      if (disposed || introDone) return;
+      if (disposed || introDone || (mobile && !introStarted && !isMobileNoticeDismissed())) return;
       video?.pause();
       if (video && video.readyState >= 1) video.currentTime = INTRO_SECONDS;
       if (videoFrame) video?.cancelVideoFrameCallback(videoFrame);
@@ -118,7 +127,7 @@ export function Hero() {
       current = target = 0;
       lastTime = 0;
       section.dataset.time = String(INTRO_SECONDS);
-      // Keep the held 00:02 video frame visible until that exact bitmap is ready.
+      // Keep the boundary video frame visible until that exact bitmap is ready.
       requestTick();
     };
     finishIntroRef.current = finishIntro;
@@ -205,21 +214,24 @@ export function Hero() {
         needsPaint = false;
         section.dataset.phase = "scroll";
         section.dataset.frame = String(index + 1);
-        section.dataset.time = String(INTRO_SECONDS + index / heroMedia.fps);
+        section.dataset.time = String(INTRO_SECONDS + index / media.fps);
         const progress = index / max;
         copy.style.opacity = String(clamp((progress - 0.78) / 0.12));
+        copy.classList.toggle("is-ready", progress >= 0.9);
         section.classList.toggle("is-sketch", progress < 0.42);
       }
       if (Math.abs(target - current) > 0.15) requestTick();
       else lastTime = 0;
     }
 
-    section.dataset.phase = reducedMotion ? "static" : "intro";
+    section.dataset.phase = reducedMotion ? "static"
+      : mobile && !isMobileNoticeDismissed() && !introDone ? "waiting" : "intro";
     section.classList.remove("is-surface-ready");
     section.dataset.frame = reducedMotion ? String(FRAME_COUNT) : "0";
-    section.dataset.time = reducedMotion ? String(heroMedia.lastFrameSeconds) : "0";
+    section.dataset.time = reducedMotion ? String(media.lastFrameSeconds) : "0";
     section.classList.toggle("is-sketch", !reducedMotion);
     copy.style.opacity = reducedMotion ? "1" : "0";
+    copy.classList.toggle("is-ready", reducedMotion);
     const resize = new ResizeObserver(measure);
     // The stage resizes throughout the final crop. Observing it creates a
     // layout/measurement loop on every scroll frame; only measure real resizes.
@@ -248,7 +260,10 @@ export function Hero() {
     // Resume an existing scroll-controlled hero at the current page position.
     current = target;
     frames?.warm();
-    if (video && !reducedMotion && !introDone) {
+    const beginIntro = () => {
+      if (!video || reducedMotion || introDone || introStarted || disposed) return;
+      introStarted = true;
+      section.dataset.phase = "intro";
       // Resize can switch variants during playback; resume the same timestamp.
       video.addEventListener("loadedmetadata", resumeIntro, { once: true });
       resumeIntro();
@@ -268,6 +283,12 @@ export function Hero() {
         introRaf = requestAnimationFrame(watchTime);
       }
       void video.play().catch(finishIntro);
+    };
+    if (mobile && !isMobileNoticeDismissed()) {
+      // Start in the dismissal gesture, including on iOS, instead of behind it.
+      window.addEventListener(MOBILE_NOTICE_DISMISSED, beginIntro, { once: true });
+    } else {
+      beginIntro();
     }
 
     return () => {
@@ -287,11 +308,12 @@ export function Hero() {
       visibility.disconnect();
       window.removeEventListener("scroll", readScroll);
       window.removeEventListener("resize", measure);
+      window.removeEventListener(MOBILE_NOTICE_DISMISSED, beginIntro);
       section.parentElement?.removeEventListener("animationend", measure);
       document.removeEventListener("visibilitychange", onVisibility);
       finishIntroRef.current = () => {};
     };
-  }, [mediaRoot, mobile, reducedMotion]);
+  }, [media, mediaRoot, mobile, reducedMotion]);
 
   return (
     <section className="hero-section" id="home" ref={sectionRef} aria-label="Portfolio introduction">

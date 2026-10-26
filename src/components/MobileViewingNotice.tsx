@@ -1,22 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { TbArrowRight, TbDeviceDesktop, TbSparkles, TbX } from "react-icons/tb";
 import { assetUrl, siteConfig } from "../data/siteContent";
+import { dismissMobileNotice, isMobileNoticeDismissed } from "../lib/mobileViewingNotice";
 import "./mobileViewingNotice.css";
 
 const mobileQuery = "(max-width: 760px), (pointer: coarse) and (max-width: 1024px) and (max-height: 500px)";
-const dismissalKey = "narkis-mobile-notice-dismissed-v1";
 
 export function MobileViewingNotice() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const continueRef = useRef<HTMLButtonElement>(null);
   const [mobile, setMobile] = useState(() => window.matchMedia(mobileQuery).matches);
-  const [dismissed, setDismissed] = useState(() => {
-    try {
-      return sessionStorage.getItem(dismissalKey) === "true";
-    } catch {
-      return false;
-    }
-  });
+  const [dismissed, setDismissed] = useState(isMobileNoticeDismissed);
   const visible = mobile && !dismissed;
 
   useEffect(() => {
@@ -43,11 +37,7 @@ export function MobileViewingNotice() {
 
   const dismiss = () => {
     setDismissed(true);
-    try {
-      sessionStorage.setItem(dismissalKey, "true");
-    } catch {
-      // Keep the notice dismissed for this page even when storage is unavailable.
-    }
+    dismissMobileNotice();
   };
 
   return (
